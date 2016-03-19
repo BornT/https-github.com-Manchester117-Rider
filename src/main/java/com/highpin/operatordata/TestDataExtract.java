@@ -1,10 +1,12 @@
 package com.highpin.operatordata;
 
-import com.highpin.tools.Utility;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 /**
@@ -124,7 +126,7 @@ public class TestDataExtract {
                     stepMap.put(title, value);
                 } else if (title.equals("Action_Keyword")) {
                     stepMap.put(title, value);
-                } else if (title.equals("Element_Type")) {
+                } else if (title.equals("Action_Type")) {
                     stepMap.put(title, value);
                 } else if (title.equals("Locator_Type")) {
                     stepMap.put(title, value);

@@ -1,6 +1,5 @@
-package com.highpin.mobile.app;
+package com.highpin.mobile.driver;
 
-import com.highpin.mobile.impl.IAppDriver;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.TouchAction;
@@ -20,17 +19,17 @@ import java.net.URL;
 /**
  * Created by Administrator on 2016/3/17.
  */
-public class AndroidDriverOperation implements IAppDriver {
+public class AndroidDriverOperation {
 
     public static Logger logger = LogManager.getLogger(AndroidDriverOperation.class.getName());
 
     // 获取屏幕高度
-    public int getScreenHeight(AppiumDriver<MobileElement> driver) {
+    public static int getScreenHeight(AppiumDriver<MobileElement> driver) {
         return driver.manage().window().getSize().height;
     }
 
     // 获取屏幕宽度
-    public int getScreenWidth(AppiumDriver<MobileElement> driver) {
+    public static int getScreenWidth(AppiumDriver<MobileElement> driver) {
         return driver.manage().window().getSize().width;
     }
 
@@ -104,86 +103,86 @@ public class AndroidDriverOperation implements IAppDriver {
         return element;
     }
 
-    public void click(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
+    public static void click(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
         MobileElement element = getElement(driver, locatorType, locatorValue);
         // 需要增加点击前的准备语句
         element.click();
     }
 
-    public void input(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
+    public static void input(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
         MobileElement element = getElement(driver, locatorType, locatorValue);
         // 需要增加输入前的准备语句
         element.sendKeys(dataSet);
     }
 
-    public void clear(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
+    public static void clear(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
         MobileElement element = getElement(driver, locatorType, locatorValue);
         // 需要增加清空前的准备语句
         element.clear();
     }
 
-    public void longPress(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
+    public static void longPress(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
         MobileElement element = getElement(driver, locatorType, locatorValue);
         TouchAction action = new TouchAction(driver);
         action.longPress(element, Integer.parseInt(dataSet)).release().perform();
     }
 
     // 通过元素进行放大
-    public void pinchByElement(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
+    public static void pinchByElement(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
         MobileElement element = getElement(driver, locatorType, locatorValue);
         driver.pinch(element);
     }
 
     // 通过坐标进行放大
-    public void pinchByPosition(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
+    public static void pinchByPosition(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
         int x = getScreenHeight(driver);
         int y = getScreenWidth(driver);
         driver.pinch(x, y);
     }
 
     // 通过元素进行缩小
-    public void zoomByElement(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
+    public static void zoomByElement(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
         MobileElement element = getElement(driver, locatorType, locatorValue);
         driver.zoom(element);
     }
 
     // 通过坐标进行缩小
-    public void zoomByPosition(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
+    public static void zoomByPosition(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
         int x = getScreenHeight(driver);
         int y = getScreenWidth(driver);
         driver.zoom(x, y);
     }
 
     // 向左滑屏
-    public void swipeToLeft(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
+    public static void swipeToLeft(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
         int height = getScreenHeight(driver);
         int width = getScreenWidth(driver);
         driver.swipe(width * 4 / 5, height / 2, width / 20, height / 2, 500);
     }
 
     // 向右滑屏
-    public void swipeToRight(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
+    public static void swipeToRight(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
         int height = getScreenHeight(driver);
         int width = getScreenWidth(driver);
         driver.swipe(width / 5, height / 2, width * 19 / 20, height / 2, 500);
     }
 
     // 向上滑动
-    public void swipeToUp(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
+    public static void swipeToUp(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
         int height = getScreenHeight(driver);
         int width = getScreenWidth(driver);
         driver.swipe(width / 2, height * 4 / 5, width / 2, height / 20, 500);
     }
 
     // 向下滑动
-    public void swipeToDown(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
+    public static void swipeToDown(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
         int height = getScreenHeight(driver);
         int width = getScreenWidth(driver);
         driver.swipe(width / 2, height / 5, width / 2, height * 19 / 20, 500);
     }
 
     // 滚动到特定元素
-    public void scrollTo(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
+    public static void scrollTo(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
         driver.scrollTo(dataSet);
     }
 }

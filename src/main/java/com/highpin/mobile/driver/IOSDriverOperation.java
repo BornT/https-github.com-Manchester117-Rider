@@ -1,4 +1,4 @@
-package com.highpin.mobile.app;
+package com.highpin.mobile.driver;
 
 /**
  * Created by Administrator on 2016/3/17.

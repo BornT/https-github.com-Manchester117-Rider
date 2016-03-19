@@ -12,7 +12,7 @@ public class ParameterObject {
     private String suiteName;
     private String className;
     private String methodName;
-    private String eleType;
+    private String actionType;
     private String locType;
     private String locValue;
     private String dataSet;
@@ -46,12 +46,12 @@ public class ParameterObject {
         this.methodName = methodName;
     }
 
-    public String getEleType() {
-        return eleType;
+    public String getActionType() {
+        return actionType;
     }
 
-    public void setEleType(String eleType) {
-        this.eleType = eleType;
+    public void setActionType(String actionType) {
+        this.actionType = actionType;
     }
 
     public String getLocType() {

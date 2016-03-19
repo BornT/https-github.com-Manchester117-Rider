@@ -1,7 +1,7 @@
 package com.highpin.generator.core;
 
 import com.highpin.mobile.param.ParameterObject;
-import com.highpin.mobile.wapper.FunctionWapper;
+import com.highpin.mobile.wrapper.FunctionWapper;
 import com.highpin.operatordata.ReadStruct;
 import com.highpin.operatordata.TestDataExtract;
 import javassist.*;
@@ -24,7 +24,7 @@ public class ClassGenerator {
 
     private List<List<List<Object>>> methodNameList = null;
     private List<List<List<Object>>> methodDescriptionList = null;
-    private List<List<List<Object>>> methodElementTypeList = null;
+    private List<List<List<Object>>> methodActionTypeList = null;
     private List<List<List<Object>>> methodLocatorTypeList = null;
     private List<List<List<Object>>> methodLocatorValueList = null;
     private List<List<List<Object>>> methodDataSetList = null;
@@ -49,7 +49,7 @@ public class ClassGenerator {
         this.classNameList = rs.getAllClassName();
         this.methodNameList = rs.getSheetField("Action_Keyword");
         this.methodDescriptionList = rs.getSheetField("Description");
-        this.methodElementTypeList = rs.getSheetField("Element_Type");
+        this.methodActionTypeList = rs.getSheetField("Action_Type");
         this.methodLocatorTypeList = rs.getSheetField("Locator_Type");
         this.methodLocatorValueList = rs.getSheetField("Locator_Value");
         this.methodDataSetList = rs.getSheetField("Data_Set");
@@ -161,7 +161,7 @@ public class ClassGenerator {
             po.setSuiteName(this.suiteList.get(suiteCtIndex));
             po.setClassName(this.classNameList.get(suiteCtIndex).get(caseCtIndex));
             po.setMethodName(this.methodNameList.get(suiteCtIndex).get(caseCtIndex).get(methodIndex).toString());
-            po.setEleType(this.methodElementTypeList.get(suiteCtIndex).get(caseCtIndex).get(methodIndex).toString());
+            po.setActionType(this.methodActionTypeList.get(suiteCtIndex).get(caseCtIndex).get(methodIndex).toString());
             po.setLocType(this.methodLocatorTypeList.get(suiteCtIndex).get(caseCtIndex).get(methodIndex).toString());
             po.setLocValue(this.methodLocatorValueList.get(suiteCtIndex).get(caseCtIndex).get(methodIndex).toString());
             po.setDataSet(this.methodDataSetList.get(suiteCtIndex).get(caseCtIndex).get(methodIndex).toString());
@@ -174,10 +174,12 @@ public class ClassGenerator {
             CtMethod ctMethod = null;
             try {
                 ctMethod = caseCtClass.getDeclaredMethod(po.getMethodName());
-                if (po.getMethodName().equalsIgnoreCase("initAndroid") && po.getEleType().isEmpty()) {
-                    ctMethod.insertAfter(FunctionWapper.initAndroidWapper(po));
-                } else if (po.getMethodName().equalsIgnoreCase("destroyAndroid") && po.getEleType().isEmpty()) {
-                    ctMethod.insertAfter(FunctionWapper.destroyAndroidWapper(po));
+                if (po.getMethodName().equalsIgnoreCase("initAndroid") && po.getActionType().isEmpty()) {
+                    ctMethod.insertAfter(FunctionWapper.initAndroidWrapper(po));
+                } else if (po.getMethodName().equalsIgnoreCase("destroyAndroid") && po.getActionType().isEmpty()) {
+                    ctMethod.insertAfter(FunctionWapper.destroyAndroidWrapper(po));
+                } else {
+                    ctMethod.insertAfter(FunctionWapper.operationWrapper(po));
                 }
             } catch (CannotCompileException | NotFoundException e) {
                 e.printStackTrace();
