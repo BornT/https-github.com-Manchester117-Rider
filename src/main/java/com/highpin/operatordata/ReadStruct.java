@@ -103,6 +103,6 @@ public class ReadStruct {
         ReadStruct rs = new ReadStruct(tde.getAllExcelData());
         rs.getTestSuiteName();
         rs.getAllClassName();
-        rs.getSheetField("Action_Keyword");
+        rs.getSheetField("Element_Type");
     }
 }

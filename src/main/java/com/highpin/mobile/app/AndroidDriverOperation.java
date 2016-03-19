@@ -1,5 +1,8 @@
-package com.highpin.mobile;
+package com.highpin.mobile.app;
 
+import com.highpin.mobile.impl.IAppDriver;
+import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.MobileElement;
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
@@ -17,22 +20,23 @@ import java.net.URL;
 /**
  * Created by Administrator on 2016/3/17.
  */
-public class AndroidHandler {
+public class AndroidDriverOperation implements IAppDriver {
 
-    public static Logger logger = LogManager.getLogger(AndroidHandler.class.getName());
+    public static Logger logger = LogManager.getLogger(AndroidDriverOperation.class.getName());
 
     // 获取屏幕高度
-    public static int getScreenHeight(AndroidDriver<AndroidElement> driver) {
+    public int getScreenHeight(AppiumDriver<MobileElement> driver) {
         return driver.manage().window().getSize().height;
     }
 
     // 获取屏幕宽度
-    public static int getScreenWidth(AndroidDriver<AndroidElement> driver) {
+    public int getScreenWidth(AppiumDriver<MobileElement> driver) {
         return driver.manage().window().getSize().width;
     }
 
     // 初始化AndroidDriver
-    public static void initAndroidDriver(AndroidDriver<AndroidElement> driver) {
+    public static AndroidDriver initAndroidDriver() throws Exception {
+        AndroidDriver driver = null;
         // 定义项目目录以及apk存放位置
         File classpathRoot = new File(System.getProperty("user.dir"));
         File appDir = new File(classpathRoot, "apps/highpin");
@@ -49,10 +53,11 @@ public class AndroidHandler {
         capabilities.setCapability(AndroidMobileCapabilityType.RESET_KEYBOARD, "True");
 
         try {
-            driver = new AndroidDriver<>(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
+            driver = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
+        return driver;
     }
 
     public static void destroyAndroidDriver(AndroidDriver<AndroidElement> driver) {
@@ -60,9 +65,9 @@ public class AndroidHandler {
     }
 
     // 获取屏幕元素
-    public static AndroidElement getElement(AndroidDriver<AndroidElement> driver, String locatorType, String locatorValue) {
+    public static MobileElement getElement(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue) {
         String locatorTypeKey = locatorType.toUpperCase();
-        AndroidElement element = null;
+        MobileElement element = null;
         switch (locatorTypeKey) {
             case "ID":
                 element = driver.findElementById(locatorValue);
@@ -99,86 +104,86 @@ public class AndroidHandler {
         return element;
     }
 
-    public static void click(AndroidDriver<AndroidElement> driver, String locatorType, String locatorValue, String dataSet) {
-        AndroidElement element = getElement(driver, locatorType, locatorValue);
+    public void click(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
+        MobileElement element = getElement(driver, locatorType, locatorValue);
         // 需要增加点击前的准备语句
         element.click();
     }
 
-    public static void input(AndroidDriver<AndroidElement> driver, String locatorType, String locatorValue, String dataSet) {
-        AndroidElement element = getElement(driver, locatorType, locatorValue);
+    public void input(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
+        MobileElement element = getElement(driver, locatorType, locatorValue);
         // 需要增加输入前的准备语句
         element.sendKeys(dataSet);
     }
 
-    public static void clear(AndroidDriver<AndroidElement> driver, String locatorType, String locatorValue, String dataSet) {
-        AndroidElement element = getElement(driver, locatorType, locatorValue);
+    public void clear(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
+        MobileElement element = getElement(driver, locatorType, locatorValue);
         // 需要增加清空前的准备语句
         element.clear();
     }
 
-    public static void longPress(AndroidDriver<AndroidElement> driver, String locatorType, String locatorValue, String dataSet) {
-        AndroidElement element = getElement(driver, locatorType, locatorValue);
+    public void longPress(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
+        MobileElement element = getElement(driver, locatorType, locatorValue);
         TouchAction action = new TouchAction(driver);
         action.longPress(element, Integer.parseInt(dataSet)).release().perform();
     }
 
     // 通过元素进行放大
-    public static void pinchByElement(AndroidDriver<AndroidElement> driver, String locatorType, String locatorValue, String dataSet) {
-        AndroidElement element = getElement(driver, locatorType, locatorValue);
+    public void pinchByElement(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
+        MobileElement element = getElement(driver, locatorType, locatorValue);
         driver.pinch(element);
     }
 
     // 通过坐标进行放大
-    public static void pinchByPosition(AndroidDriver<AndroidElement> driver, String locatorType, String locatorValue, String dataSet) {
+    public void pinchByPosition(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
         int x = getScreenHeight(driver);
         int y = getScreenWidth(driver);
         driver.pinch(x, y);
     }
 
     // 通过元素进行缩小
-    public static void zoomByElement(AndroidDriver<AndroidElement> driver, String locatorType, String locatorValue, String dataSet) {
-        AndroidElement element = getElement(driver, locatorType, locatorValue);
+    public void zoomByElement(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
+        MobileElement element = getElement(driver, locatorType, locatorValue);
         driver.zoom(element);
     }
 
     // 通过坐标进行缩小
-    public static void zoomByPosition(AndroidDriver<AndroidElement> driver, String locatorType, String locatorValue, String dataSet) {
+    public void zoomByPosition(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
         int x = getScreenHeight(driver);
         int y = getScreenWidth(driver);
         driver.zoom(x, y);
     }
 
     // 向左滑屏
-    public static void swipeToLeft(AndroidDriver<AndroidElement> driver, String locatorType, String locatorValue, String dataSet) {
+    public void swipeToLeft(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
         int height = getScreenHeight(driver);
         int width = getScreenWidth(driver);
         driver.swipe(width * 4 / 5, height / 2, width / 20, height / 2, 500);
     }
 
     // 向右滑屏
-    public static void swipeToRight(AndroidDriver<AndroidElement> driver, String locatorType, String locatorValue, String dataSet) {
+    public void swipeToRight(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
         int height = getScreenHeight(driver);
         int width = getScreenWidth(driver);
         driver.swipe(width / 5, height / 2, width * 19 / 20, height / 2, 500);
     }
 
     // 向上滑动
-    public static void swipeToUp(AndroidDriver<AndroidElement> driver, String locatorType, String locatorValue, String dataSet) {
+    public void swipeToUp(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
         int height = getScreenHeight(driver);
         int width = getScreenWidth(driver);
         driver.swipe(width / 2, height * 4 / 5, width / 2, height / 20, 500);
     }
 
     // 向下滑动
-    public static void swipeToDown(AndroidDriver<AndroidElement> driver, String locatorType, String locatorValue, String dataSet) {
+    public void swipeToDown(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
         int height = getScreenHeight(driver);
         int width = getScreenWidth(driver);
         driver.swipe(width / 2, height / 5, width / 2, height * 19 / 20, 500);
     }
 
     // 滚动到特定元素
-    public static void scrollTo(AndroidDriver<AndroidElement> driver, String locatorType, String locatorValue, String dataSet) {
+    public void scrollTo(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
         driver.scrollTo(dataSet);
     }
 }

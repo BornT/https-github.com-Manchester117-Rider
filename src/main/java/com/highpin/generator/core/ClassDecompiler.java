@@ -163,5 +163,7 @@ public class ClassDecompiler {
         cd.writeClassToPackage();
         cd.getTestClassFileName();
         cd.decompilerClass();
+        ConvertCodeFile ccf = new ConvertCodeFile();
+        ccf.convertUnicodeFile();
     }
 }

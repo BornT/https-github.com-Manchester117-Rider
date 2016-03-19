@@ -1,5 +1,7 @@
 package com.highpin.generator.core;
 
+import com.highpin.mobile.param.ParameterObject;
+import com.highpin.mobile.wapper.FunctionWapper;
 import com.highpin.operatordata.ReadStruct;
 import com.highpin.operatordata.TestDataExtract;
 import javassist.*;
@@ -115,16 +117,22 @@ public class ClassGenerator {
         for (int suiteCtIndex = 0; suiteCtIndex < this.ctList.size(); ++suiteCtIndex) {
             List<CtClass> suiteClassList = this.ctList.get(suiteCtIndex);
             for (int caseCtIndex = 0; caseCtIndex < suiteClassList.size(); ++caseCtIndex) {
+                // 获取当前遍历到的类
                 ctClass = suiteClassList.get(caseCtIndex);
+                // 向类中插入框架方法
                 this.createMethodBody(ctClass, suiteCtIndex, caseCtIndex);
                 try {
+                    // 写出字节码到指定目录
                     ctClass.writeFile("target/classes");
                 } catch (IOException | CannotCompileException e) {
                     e.printStackTrace();
                 }
+                // 解除类冻结
                 ctClass.defrost();
+                // 向框架方法中插入真实执行代码
                 this.insertRealTestMethod(ctClass, suiteCtIndex, caseCtIndex);
                 try {
+                    // 再次写出字节码到指定目录
                     ctClass.writeFile("target/classes");
                 } catch (IOException | CannotCompileException e) {
                     e.printStackTrace();
@@ -136,7 +144,7 @@ public class ClassGenerator {
     public void createMethodBody(CtClass caseCtClass, int suiteCtIndex, int caseCtIndex) {
         for (int methodIndex = 0; methodIndex < this.methodNameList.get(suiteCtIndex).get(caseCtIndex).size(); ++methodIndex) {
             String methodName = this.methodNameList.get(suiteCtIndex).get(caseCtIndex).get(methodIndex).toString();
-            String methodBody = "public void " + methodName + "(io.appium.java_client.android.AndroidDriver driver) {}";
+            String methodBody = "public void " + methodName + "() {}";
             CtMethod ctMethod = null;
             try {
                 ctMethod = CtNewMethod.make(methodBody, caseCtClass);
@@ -148,12 +156,29 @@ public class ClassGenerator {
     }
 
     public void insertRealTestMethod(CtClass caseCtClass, int suiteCtIndex, int caseCtIndex) {
+        ParameterObject po = new ParameterObject();
         for (int methodIndex = 0; methodIndex < this.methodNameList.get(suiteCtIndex).get(caseCtIndex).size(); ++methodIndex) {
-            String methodName = this.methodNameList.get(suiteCtIndex).get(caseCtIndex).get(methodIndex).toString();
+            po.setSuiteName(this.suiteList.get(suiteCtIndex));
+            po.setClassName(this.classNameList.get(suiteCtIndex).get(caseCtIndex));
+            po.setMethodName(this.methodNameList.get(suiteCtIndex).get(caseCtIndex).get(methodIndex).toString());
+            po.setEleType(this.methodElementTypeList.get(suiteCtIndex).get(caseCtIndex).get(methodIndex).toString());
+            po.setLocType(this.methodLocatorTypeList.get(suiteCtIndex).get(caseCtIndex).get(methodIndex).toString());
+            po.setLocValue(this.methodLocatorValueList.get(suiteCtIndex).get(caseCtIndex).get(methodIndex).toString());
+            po.setDataSet(this.methodDataSetList.get(suiteCtIndex).get(caseCtIndex).get(methodIndex).toString());
+            po.setDescription(this.methodDescriptionList.get(suiteCtIndex).get(caseCtIndex).get(methodIndex).toString());
+            po.setVerifyType(this.methodVerifyTypeList.get(suiteCtIndex).get(caseCtIndex).get(methodIndex));
+            po.setVerifyTarget(this.methodVerifyTargetList.get(suiteCtIndex).get(caseCtIndex).get(methodIndex));
+            po.setVerifyValue(this.methodVerifyValueList.get(suiteCtIndex).get(caseCtIndex).get(methodIndex));
+            po.setScreenCapture(this.methodScreenCaptureList.get(suiteCtIndex).get(caseCtIndex).get(methodIndex).toString());
+
             CtMethod ctMethod = null;
             try {
-                ctMethod = caseCtClass.getDeclaredMethod(methodName);
-                ctMethod.insertBefore("com.highpin.mobile.AndroidHandler.initAndroidDriver($1);");
+                ctMethod = caseCtClass.getDeclaredMethod(po.getMethodName());
+                if (po.getMethodName().equalsIgnoreCase("initAndroid") && po.getEleType().isEmpty()) {
+                    ctMethod.insertAfter(FunctionWapper.initAndroidWapper(po));
+                } else if (po.getMethodName().equalsIgnoreCase("destroyAndroid") && po.getEleType().isEmpty()) {
+                    ctMethod.insertAfter(FunctionWapper.destroyAndroidWapper(po));
+                }
             } catch (CannotCompileException | NotFoundException e) {
                 e.printStackTrace();
             }
