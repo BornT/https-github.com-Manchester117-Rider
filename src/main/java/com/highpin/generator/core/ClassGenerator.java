@@ -5,6 +5,13 @@ import com.highpin.mobile.wrapper.FunctionWapper;
 import com.highpin.operatordata.ReadStruct;
 import com.highpin.operatordata.TestDataExtract;
 import javassist.*;
+import javassist.bytecode.AnnotationsAttribute;
+import javassist.bytecode.ClassFile;
+import javassist.bytecode.ConstPool;
+import javassist.bytecode.annotation.Annotation;
+import javassist.bytecode.annotation.ArrayMemberValue;
+import javassist.bytecode.annotation.BooleanMemberValue;
+import javassist.bytecode.annotation.StringMemberValue;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -84,6 +91,7 @@ public class ClassGenerator {
      */
     public void insertField() {
         CtField ctFieldDriver = null;
+        CtField ctFieldDesiredCapabilities  = null;
         CtField ctFieldExtentReports = null;
         CtField ctFieldExtentTest = null;
         for (List<CtClass> suiteCtList : this.ctList) {
@@ -92,6 +100,9 @@ public class ClassGenerator {
                     // 加入AppiumDriver成员
                     ctFieldDriver = new CtField(this.cPool.getCtClass("io.appium.java_client.android.AndroidDriver"), "driver", ct);
                     ctFieldDriver.setModifiers(Modifier.PRIVATE);
+                    // 加入App属性控制
+                    ctFieldDesiredCapabilities = new CtField(this.cPool.getCtClass("org.openqa.selenium.remote.DesiredCapabilities"), "capabilities", ct);
+                    ctFieldDesiredCapabilities.setModifiers(Modifier.PRIVATE);
                     // 加入ExtentReports成员
                     ctFieldExtentReports = new CtField(this.cPool.getCtClass("com.relevantcodes.extentreports.ExtentReports"), "extent", ct);
                     ctFieldExtentReports.setModifiers(Modifier.PRIVATE);
@@ -100,6 +111,7 @@ public class ClassGenerator {
                     ctFieldExtentTest.setModifiers(Modifier.PRIVATE);
 
                     ct.addField(ctFieldDriver);
+                    ct.addField(ctFieldDesiredCapabilities);
                     ct.addField(ctFieldExtentReports);
                     ct.addField(ctFieldExtentTest);
                     logger.info("向类当中添加属性");
@@ -152,7 +164,42 @@ public class ClassGenerator {
             } catch (CannotCompileException e) {
                 e.printStackTrace();
             }
+
+            // 给测试方法添加注解
+            if (methodName.startsWith("config")) {
+                this.addAnnotation(caseCtClass, ctMethod, "org.testng.annotations.BeforeClass", "alwaysRun", true);
+            } else if (methodName.startsWith("init")) {
+                this.addAnnotation(caseCtClass, ctMethod, "org.testng.annotations.Test", "enabled", true);
+            } else if (methodName.startsWith("destroy")) {
+                this.addAnnotation(caseCtClass, ctMethod, "org.testng.annotations.AfterClass", "alwaysRun", true);
+            } else {
+                String annotValue = this.methodNameList.get(suiteCtIndex).get(caseCtIndex).get(methodIndex - 1).toString();
+                this.addAnnotation(caseCtClass, ctMethod, "org.testng.annotations.Test", "dependsOnMethods", annotValue);
+            }
         }
+    }
+
+    private void addAnnotation(CtClass ctClass, CtMethod ctMethod, String annotTitle, String annotKey, Object annotValue) {
+        // 给方法添加Annotation
+        ClassFile classFile = ctClass.getClassFile();
+        ConstPool cPool = classFile.getConstPool();
+        String methodName = ctMethod.getName();
+        AnnotationsAttribute attr = new AnnotationsAttribute(cPool, AnnotationsAttribute.visibleTag);
+        Annotation annotation = new Annotation(annotTitle, cPool);
+        if (methodName.startsWith("config")) {
+            annotation.addMemberValue(annotKey, new BooleanMemberValue((boolean) annotValue, cPool));
+        } else if (methodName.startsWith("init") || methodName.startsWith("destroy")) {
+            // 如果Annotation的属性值是boolean类型
+            annotation.addMemberValue(annotKey, new BooleanMemberValue((boolean) annotValue, cPool));
+        } else {
+            // dependsOnMethod注解值必须是数组,所以使用ArrayMemberValue
+            ArrayMemberValue arrMemberValue = new ArrayMemberValue(cPool);
+            StringMemberValue[] strMemberValues = new StringMemberValue[]{new StringMemberValue(annotValue.toString(), cPool)};
+            arrMemberValue.setValue(strMemberValues);
+            annotation.addMemberValue(annotKey, arrMemberValue);
+        }
+        attr.addAnnotation(annotation);
+        ctMethod.getMethodInfo().addAttribute(attr);
     }
 
     public void insertRealTestMethod(CtClass caseCtClass, int suiteCtIndex, int caseCtIndex) {
@@ -174,7 +221,9 @@ public class ClassGenerator {
             CtMethod ctMethod = null;
             try {
                 ctMethod = caseCtClass.getDeclaredMethod(po.getMethodName());
-                if (po.getMethodName().equalsIgnoreCase("initAndroid") && po.getActionType().isEmpty()) {
+                if (po.getMethodName().equalsIgnoreCase("configAndroid") && po.getActionType().isEmpty()) {
+                    ctMethod.insertAfter(FunctionWapper.configAndroidWrapper(po));
+                } else if (po.getMethodName().equalsIgnoreCase("initAndroid") && po.getActionType().isEmpty()) {
                     ctMethod.insertAfter(FunctionWapper.initAndroidWrapper(po));
                 } else if (po.getMethodName().equalsIgnoreCase("destroyAndroid") && po.getActionType().isEmpty()) {
                     ctMethod.insertAfter(FunctionWapper.destroyAndroidWrapper(po));

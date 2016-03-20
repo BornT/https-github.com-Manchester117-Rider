@@ -1,6 +1,5 @@
-package com.highpin.clean;
+package com.highpin.tools;
 
-import com.highpin.tools.Utility;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

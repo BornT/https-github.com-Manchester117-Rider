@@ -169,4 +169,30 @@ public class Utility {
             e.printStackTrace();
         }
     }
+
+    /**
+     * @Description: 替换报告中的JS引用
+     */
+    public static void replaceReportJS() {
+        File reportFolder = new File("reports");
+        File[] reportPackList = reportFolder.listFiles();
+        String reportStr = null;
+
+        if (reportPackList != null) {
+            for (File reportPack : reportPackList) {
+                File[] reportList = reportPack.listFiles();
+                if (reportList != null) {
+                    for (File singleReport : reportList) {
+                        if (singleReport.getName().endsWith(".html")) {
+                            reportStr = Utility.fileInput(singleReport);
+                            reportStr = reportStr.replace("https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js",
+                                    "http://libs.baidu.com/jquery/1.11.3/jquery.min.js");
+                            Utility.fileOutput(singleReport, reportStr);
+                        }
+                    }
+                }
+            }
+        }
+        logger.info("报告JS替换完毕");
+    }
 }
