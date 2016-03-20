@@ -64,7 +64,9 @@ public class FunctionWapper {
 
     public static String operationWrapper(ParameterObject po) {
         String realFun = null;
-        if (po.getActionType().equalsIgnoreCase("click")) {
+        if (po.getActionType().equalsIgnoreCase("wait")) {
+            realFun = "com.highpin.mobile.driver.AndroidDriverOperation.waitDriver(\"" + po.getDataSet() + "\");";
+        } else if (po.getActionType().equalsIgnoreCase("click")) {
             realFun = "com.highpin.mobile.driver.AndroidDriverOperation.click(this.driver, \"" + po.getLocType()+ "\", \"" + po.getLocValue() + "\", \"" + po.getDataSet() + "\");";
         } else if (po.getActionType().equalsIgnoreCase("input")) {
             realFun = "com.highpin.mobile.driver.AndroidDriverOperation.input(this.driver, \"" + po.getLocType()+ "\", \"" + po.getLocValue() + "\", \"" + po.getDataSet() + "\");";

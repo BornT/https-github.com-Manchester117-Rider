@@ -56,6 +56,15 @@ public class AndroidDriverOperation {
         driver.quit();
     }
 
+    public static void waitDriver(String dataSet) {
+        long sec = Integer.parseInt(dataSet);
+        try {
+            Thread.sleep(sec * 1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     // 获取屏幕高度
     public static int getScreenHeight(AppiumDriver<MobileElement> driver) {
         return driver.manage().window().getSize().height;
