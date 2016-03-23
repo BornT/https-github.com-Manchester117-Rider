@@ -9,7 +9,7 @@ import java.util.Date;
  * Created by Administrator on 2016/3/19.
  */
 public class FunctionWapper {
-    public static String configAndroidWrapper(ParameterObject po) {
+    public static String initAndroidWrapper(ParameterObject po) {
         String time = new SimpleDateFormat("yyyy_MM_dd_HH_mm").format(new Date());
         String statements = "this.extent = new com.relevantcodes.extentreports.ExtentReports(\"reports/" + po.getSuiteName() + "_" + time + "/Automation Test Report-HighPin-MIK.html\", java.lang.Boolean.FALSE);" +
                             "this.extent.addSystemInfo(\"Appium Version\", \"1.4.16.1\");" +
@@ -19,7 +19,7 @@ public class FunctionWapper {
                             "this.test = this.extent.startTest(\"" + po.getClassName() + "\", \"HighPin Automation Test\");" +
                             "try {" +
                                 // 调用真实操作方法
-                                "this.capabilities = com.highpin.mobile.driver.AndroidDriverOperation.configAndroid();" +
+                                "this.driver = com.highpin.mobile.driver.AndroidDriverOperation.initAndroid();" +
                                 "this.test.log(com.relevantcodes.extentreports.LogStatus.PASS, \"" + po.getDescription() + " --->> " + po.getDataSet() + "\");" +
                             "} catch (java.lang.Exception e) {" +
                                 "e.printStackTrace();" +
@@ -29,11 +29,11 @@ public class FunctionWapper {
 
     }
 
-    public static String initAndroidWrapper(ParameterObject po) {
+    public static String standByAndroidWrapper(ParameterObject po) {
         String time = new SimpleDateFormat("yyyy_MM_dd_HH_mm").format(new Date());
         String statements = "try {" +
                                 // 调用真实操作方法
-                                "this.driver = com.highpin.mobile.driver.AndroidDriverOperation.initAndroidDriver(this.capabilities);" +
+                                "com.highpin.mobile.driver.AndroidDriverOperation.standByAndroid(this.driver);" +
                                 "this.test.log(com.relevantcodes.extentreports.LogStatus.PASS, \"" + po.getDescription() + " --->> " + po.getDataSet() + "\");" +
                             "} catch (java.lang.Exception e) {" +
                                 "e.printStackTrace();" +
@@ -44,6 +44,7 @@ public class FunctionWapper {
                                     "this.test.log(com.relevantcodes.extentreports.LogStatus.INFO, \"截图 -- " + po.getDescription() + ": \" + this.test.addScreenCapture(imgPath));" +
                                 "}" +
                             "}";
+        System.out.println(statements);
         return statements;
     }
 
@@ -62,11 +63,17 @@ public class FunctionWapper {
         return statements;
     }
 
+    public static String waitAction(ParameterObject po) {
+        String realFun = null;
+        if (po.getMethodName().startsWith("wait")) {
+            realFun = "com.highpin.mobile.driver.AndroidDriverOperation.waitAction(\"" + po.getDataSet() + "\");";
+        }
+        return realFun;
+    }
+
     public static String operationWrapper(ParameterObject po) {
         String realFun = null;
-        if (po.getActionType().equalsIgnoreCase("wait")) {
-            realFun = "com.highpin.mobile.driver.AndroidDriverOperation.waitDriver(\"" + po.getDataSet() + "\");";
-        } else if (po.getActionType().equalsIgnoreCase("click")) {
+        if (po.getActionType().equalsIgnoreCase("click")) {
             realFun = "com.highpin.mobile.driver.AndroidDriverOperation.click(this.driver, \"" + po.getLocType()+ "\", \"" + po.getLocValue() + "\", \"" + po.getDataSet() + "\");";
         } else if (po.getActionType().equalsIgnoreCase("input")) {
             realFun = "com.highpin.mobile.driver.AndroidDriverOperation.input(this.driver, \"" + po.getLocType()+ "\", \"" + po.getLocValue() + "\", \"" + po.getDataSet() + "\");";

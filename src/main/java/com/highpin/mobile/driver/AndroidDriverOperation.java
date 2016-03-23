@@ -4,17 +4,22 @@ import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
-import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.By;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Administrator on 2016/3/17.
@@ -24,7 +29,7 @@ public class AndroidDriverOperation {
     public static Logger logger = LogManager.getLogger(AndroidDriverOperation.class.getName());
 
     // 初始化AndroidDriver
-    public static DesiredCapabilities configAndroid() throws Exception {
+    public static AppiumDriver initAndroid() throws Exception {
         // 定义项目目录以及apk存放位置
         File classpathRoot = new File(System.getProperty("user.dir"));
         File appDir = new File(classpathRoot, "apps/highpin");
@@ -39,24 +44,26 @@ public class AndroidDriverOperation {
         // 设置Appium可以输入中文(不依赖键盘)
         capabilities.setCapability(AndroidMobileCapabilityType.UNICODE_KEYBOARD, "True");
         capabilities.setCapability(AndroidMobileCapabilityType.RESET_KEYBOARD, "True");
-        return capabilities;
-    }
-
-    public static AndroidDriver initAndroidDriver(DesiredCapabilities capabilities) throws Exception {
-        AndroidDriver driver = null;
+        // 初始化Driver
+        AppiumDriver<MobileElement> driver = null;
         try {
-            driver = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
+            driver = new AndroidDriver<>(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
+
         return driver;
     }
 
-    public static void destroyAndroidDriver(AndroidDriver<AndroidElement> driver) throws Exception{
+    public static void standByAndroid(AppiumDriver<MobileElement> driver) throws Exception {
+        driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+    }
+
+    public static void destroyAndroidDriver(AppiumDriver<MobileElement> driver) throws Exception{
         driver.quit();
     }
 
-    public static void waitDriver(String dataSet) {
+    public static void waitAction(String dataSet) {
         long sec = Integer.parseInt(dataSet);
         try {
             Thread.sleep(sec * 1000);
@@ -83,6 +90,9 @@ public class AndroidDriverOperation {
             case "ID":
                 element = driver.findElementById(locatorValue);
                 break;
+            case "ACCESSIBILITYID":
+                element = driver.findElementByAccessibilityId(locatorValue);
+                break;
             case "XPATH":
                 element = driver.findElementByXPath(locatorValue);
                 break;
@@ -94,9 +104,6 @@ public class AndroidDriverOperation {
                 break;
             case "CLASSNAME":
                 element = driver.findElementByClassName(locatorValue);
-                break;
-            case "ACCESSIBILITYID":
-                element = driver.findElementByAccessibilityId(locatorValue);
                 break;
             case "LINKTEXT":
                 element = driver.findElementByLinkText(locatorValue);
@@ -118,7 +125,9 @@ public class AndroidDriverOperation {
     public static void click(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
         MobileElement element = null;
         try {
-            element = getElement(driver, locatorType, locatorValue);
+            WebDriverWait wait = new WebDriverWait(driver, 15);
+            element = AndroidDriverOperation.getElement(driver, locatorType, locatorValue);
+            wait.until(ExpectedConditions.visibilityOf(element));
             // 需要增加点击前的准备语句
             element.click();
         } catch (Exception e) {
@@ -129,7 +138,9 @@ public class AndroidDriverOperation {
     public static void input(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
         MobileElement element = null;
         try {
-            element = getElement(driver, locatorType, locatorValue);
+            WebDriverWait wait = new WebDriverWait(driver, 15);
+            element = AndroidDriverOperation.getElement(driver, locatorType, locatorValue);
+            wait.until(ExpectedConditions.visibilityOf(element));
             // 需要增加输入前的准备语句
             element.sendKeys(dataSet);
         } catch (Exception e) {
@@ -140,7 +151,9 @@ public class AndroidDriverOperation {
     public static void clear(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
         MobileElement element = null;
         try {
-            element = getElement(driver, locatorType, locatorValue);
+            WebDriverWait wait = new WebDriverWait(driver, 15);
+            element = AndroidDriverOperation.getElement(driver, locatorType, locatorValue);
+            wait.until(ExpectedConditions.visibilityOf(element));
             // 需要增加清空前的准备语句
             element.clear();
         } catch (Exception e) {
@@ -151,7 +164,9 @@ public class AndroidDriverOperation {
     public static void longPress(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
         MobileElement element = null;
         try {
-            element = getElement(driver, locatorType, locatorValue);
+            WebDriverWait wait = new WebDriverWait(driver, 15);
+            element = AndroidDriverOperation.getElement(driver, locatorType, locatorValue);
+            wait.until(ExpectedConditions.visibilityOf(element));
             TouchAction action = new TouchAction(driver);
             action.longPress(element, Integer.parseInt(dataSet)).release().perform();
         } catch (Exception e) {
@@ -163,7 +178,9 @@ public class AndroidDriverOperation {
     public static void pinchByElement(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
         MobileElement element = null;
         try {
-            element = getElement(driver, locatorType, locatorValue);
+            WebDriverWait wait = new WebDriverWait(driver, 15);
+            element = AndroidDriverOperation.getElement(driver, locatorType, locatorValue);
+            wait.until(ExpectedConditions.visibilityOf(element));
             driver.pinch(element);
         } catch (Exception e) {
             e.printStackTrace();
@@ -208,7 +225,11 @@ public class AndroidDriverOperation {
         try {
             int height = getScreenHeight(driver);
             int width = getScreenWidth(driver);
-            driver.swipe(width * 4 / 5, height / 2, width / 20, height / 2, 500);
+            int swipeTimes = Integer.parseInt(dataSet);
+            for (int i = 0; i < swipeTimes; ++i) {
+                Thread.sleep(1000);
+                driver.swipe(width * 4 / 5, height / 2, width / 20, height / 2, 500);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -219,7 +240,11 @@ public class AndroidDriverOperation {
         try {
             int height = getScreenHeight(driver);
             int width = getScreenWidth(driver);
-            driver.swipe(width / 5, height / 2, width * 19 / 20, height / 2, 500);
+            int swipeTimes = Integer.parseInt(dataSet);
+            for (int i = 0; i < swipeTimes; ++i) {
+                Thread.sleep(1000);
+                driver.swipe(width / 5, height / 2, width * 19 / 20, height / 2, 500);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -230,7 +255,11 @@ public class AndroidDriverOperation {
         try {
             int height = getScreenHeight(driver);
             int width = getScreenWidth(driver);
-            driver.swipe(width / 2, height * 4 / 5, width / 2, height / 20, 500);
+            int swipeTimes = Integer.parseInt(dataSet);
+            for (int i = 0; i < swipeTimes; ++i) {
+                Thread.sleep(1000);
+                driver.swipe(width / 2, height * 4 / 5, width / 2, height / 20, 500);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -241,7 +270,11 @@ public class AndroidDriverOperation {
         try {
             int height = getScreenHeight(driver);
             int width = getScreenWidth(driver);
-            driver.swipe(width / 2, height / 5, width / 2, height * 19 / 20, 500);
+            int swipeTimes = Integer.parseInt(dataSet);
+            for (int i = 0; i < swipeTimes; ++i) {
+                Thread.sleep(1000);
+                driver.swipe(width / 2, height / 5, width / 2, height * 19 / 20, 500);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

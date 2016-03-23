@@ -98,7 +98,7 @@ public class ClassGenerator {
             for (CtClass ct : suiteCtList) {
                 try {
                     // 加入AppiumDriver成员
-                    ctFieldDriver = new CtField(this.cPool.getCtClass("io.appium.java_client.android.AndroidDriver"), "driver", ct);
+                    ctFieldDriver = new CtField(this.cPool.getCtClass("io.appium.java_client.AppiumDriver"), "driver", ct);
                     ctFieldDriver.setModifiers(Modifier.PRIVATE);
                     // 加入App属性控制
                     ctFieldDesiredCapabilities = new CtField(this.cPool.getCtClass("org.openqa.selenium.remote.DesiredCapabilities"), "capabilities", ct);
@@ -166,9 +166,9 @@ public class ClassGenerator {
             }
 
             // 给测试方法添加注解
-            if (methodName.startsWith("config")) {
+            if (methodName.startsWith("init")) {
                 this.addAnnotation(caseCtClass, ctMethod, "org.testng.annotations.BeforeClass", "alwaysRun", true);
-            } else if (methodName.startsWith("init")) {
+            } else if (methodName.startsWith("standBy")) {
                 this.addAnnotation(caseCtClass, ctMethod, "org.testng.annotations.Test", "enabled", true);
             } else if (methodName.startsWith("destroy")) {
                 this.addAnnotation(caseCtClass, ctMethod, "org.testng.annotations.AfterClass", "alwaysRun", true);
@@ -186,9 +186,7 @@ public class ClassGenerator {
         String methodName = ctMethod.getName();
         AnnotationsAttribute attr = new AnnotationsAttribute(cPool, AnnotationsAttribute.visibleTag);
         Annotation annotation = new Annotation(annotTitle, cPool);
-        if (methodName.startsWith("config")) {
-            annotation.addMemberValue(annotKey, new BooleanMemberValue((boolean) annotValue, cPool));
-        } else if (methodName.startsWith("init") || methodName.startsWith("destroy")) {
+        if (methodName.startsWith("init") || methodName.startsWith("destroy") || methodName.startsWith("standBy")) {
             // 如果Annotation的属性值是boolean类型
             annotation.addMemberValue(annotKey, new BooleanMemberValue((boolean) annotValue, cPool));
         } else {
@@ -221,12 +219,14 @@ public class ClassGenerator {
             CtMethod ctMethod = null;
             try {
                 ctMethod = caseCtClass.getDeclaredMethod(po.getMethodName());
-                if (po.getMethodName().equalsIgnoreCase("configAndroid") && po.getActionType().isEmpty()) {
-                    ctMethod.insertAfter(FunctionWapper.configAndroidWrapper(po));
-                } else if (po.getMethodName().equalsIgnoreCase("initAndroid") && po.getActionType().isEmpty()) {
+                if (po.getMethodName().equalsIgnoreCase("initAndroid") && po.getActionType().isEmpty()) {
                     ctMethod.insertAfter(FunctionWapper.initAndroidWrapper(po));
+                } else if (po.getMethodName().equalsIgnoreCase("standByAndroid") && po.getActionType().isEmpty()) {
+                    ctMethod.insertAfter(FunctionWapper.standByAndroidWrapper(po));
                 } else if (po.getMethodName().equalsIgnoreCase("destroyAndroid") && po.getActionType().isEmpty()) {
                     ctMethod.insertAfter(FunctionWapper.destroyAndroidWrapper(po));
+                } else if (po.getMethodName().startsWith("wait") && po.getActionType().isEmpty() && !po.getDataSet().isEmpty()) {
+                    ctMethod.insertAfter(FunctionWapper.waitAction(po));
                 } else {
                     ctMethod.insertAfter(FunctionWapper.operationWrapper(po));
                 }
