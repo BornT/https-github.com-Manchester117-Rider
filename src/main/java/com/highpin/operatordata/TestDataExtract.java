@@ -1,5 +1,8 @@
 package com.highpin.operatordata;
 
+import com.highpin.tools.Utility;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -13,6 +16,7 @@ import java.util.*;
  * Created by Peng.Zhao on 2016/3/15.
  */
 public class TestDataExtract {
+    public static Logger logger = LogManager.getLogger(TestDataExtract.class.getName());
     private File caseFolder = null;
 
     public TestDataExtract() {
@@ -54,7 +58,7 @@ public class TestDataExtract {
         } catch (IOException e) {
             e.printStackTrace();
         }
-//      System.out.println(Utility.dataStructConvertJSON(multiExcelMap));
+        logger.info("所有测试数据: " + Utility.dataStructConvertJSON(multiExcelMap));
         return multiExcelMap;
     }
 
@@ -90,7 +94,7 @@ public class TestDataExtract {
             // 需要在此处插入验证点
             singleExcelMap.put(sheetName, sheetMap);
         }
-//      System.out.println(Utility.dataStructConvertJSON(singleExcelMap));
+        logger.info("单个Excel数据: " + Utility.dataStructConvertJSON(singleExcelMap));
         return singleExcelMap;
     }
 
@@ -154,7 +158,7 @@ public class TestDataExtract {
                 }
             }
         }
-//      System.out.println(Utility.dataStructConvertJSON(sheetMap));
+        logger.info("单个Sheet页数据: " + Utility.dataStructConvertJSON(sheetMap));
         return sheetMap;
     }
 

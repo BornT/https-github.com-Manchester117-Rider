@@ -1,8 +1,9 @@
 package com.highpin.mobile.driver;
 
-import com.highpin.mobile.base.BaseOperation;
+import com.highpin.mobile.base.BaseDriverOperation;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
+import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
@@ -20,12 +21,12 @@ import java.net.URL;
 /**
  * Created by Administrator on 2016/3/17.
  */
-public class AndroidDriverOperation extends BaseOperation {
+public class AndroidDriverOperation extends BaseDriverOperation {
 
     public static Logger logger = LogManager.getLogger(AndroidDriverOperation.class.getName());
 
     // 初始化AndroidDriver
-    public static AppiumDriver initAndroid() throws Exception {
+    public static AppiumDriver initDriver() throws Exception {
         // 定义项目目录以及apk存放位置
         File classpathRoot = new File(System.getProperty("user.dir"));
         File appDir = new File(classpathRoot, "apps/highpin");

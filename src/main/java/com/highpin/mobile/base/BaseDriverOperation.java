@@ -1,6 +1,5 @@
 package com.highpin.mobile.base;
 
-import com.highpin.mobile.driver.AndroidDriverOperation;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.TouchAction;
@@ -12,16 +11,16 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Created by Administrator on 2016/3/23.
+ * Created by Administrator on 2016/3/24.
  */
-public class BaseOperation {
-    public static Logger logger = LogManager.getLogger(BaseOperation.class.getName());
+public class BaseDriverOperation {
+    public static Logger logger = LogManager.getLogger(BaseDriverOperation.class.getName());
 
-    public static void standByAndroid(AppiumDriver<MobileElement> driver) throws Exception {
+    public static void standByDriver(AppiumDriver<MobileElement> driver) throws Exception {
         driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
     }
 
-    public static void destroyAndroidDriver(AppiumDriver<MobileElement> driver) throws Exception{
+    public static void destroyDriver(AppiumDriver<MobileElement> driver) throws Exception{
         driver.quit();
     }
 
@@ -88,7 +87,7 @@ public class BaseOperation {
         MobileElement element = null;
         try {
             WebDriverWait wait = new WebDriverWait(driver, 15);
-            element = AndroidDriverOperation.getElement(driver, locatorType, locatorValue);
+            element = getElement(driver, locatorType, locatorValue);
             wait.until(ExpectedConditions.visibilityOf(element));
             // 需要增加点击前的准备语句
             element.click();
@@ -101,7 +100,7 @@ public class BaseOperation {
         MobileElement element = null;
         try {
             WebDriverWait wait = new WebDriverWait(driver, 15);
-            element = AndroidDriverOperation.getElement(driver, locatorType, locatorValue);
+            element = getElement(driver, locatorType, locatorValue);
             wait.until(ExpectedConditions.visibilityOf(element));
             // 需要增加输入前的准备语句
             element.sendKeys(dataSet);
@@ -114,7 +113,7 @@ public class BaseOperation {
         MobileElement element = null;
         try {
             WebDriverWait wait = new WebDriverWait(driver, 15);
-            element = AndroidDriverOperation.getElement(driver, locatorType, locatorValue);
+            element = getElement(driver, locatorType, locatorValue);
             wait.until(ExpectedConditions.visibilityOf(element));
             // 需要增加清空前的准备语句
             element.clear();
@@ -127,7 +126,7 @@ public class BaseOperation {
         MobileElement element = null;
         try {
             WebDriverWait wait = new WebDriverWait(driver, 15);
-            element = AndroidDriverOperation.getElement(driver, locatorType, locatorValue);
+            element = getElement(driver, locatorType, locatorValue);
             wait.until(ExpectedConditions.visibilityOf(element));
             TouchAction action = new TouchAction(driver);
             action.longPress(element, Integer.parseInt(dataSet)).release().perform();
@@ -141,7 +140,7 @@ public class BaseOperation {
         MobileElement element = null;
         try {
             WebDriverWait wait = new WebDriverWait(driver, 15);
-            element = AndroidDriverOperation.getElement(driver, locatorType, locatorValue);
+            element = getElement(driver, locatorType, locatorValue);
             wait.until(ExpectedConditions.visibilityOf(element));
             driver.pinch(element);
         } catch (Exception e) {

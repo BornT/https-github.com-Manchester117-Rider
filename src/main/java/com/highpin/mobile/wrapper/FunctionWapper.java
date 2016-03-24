@@ -19,7 +19,7 @@ public class FunctionWapper {
                             "this.test = this.extent.startTest(\"" + po.getClassName() + "\", \"HighPin Automation Test\");" +
                             "try {" +
                                 // 调用真实操作方法
-                                "this.driver = com.highpin.mobile.driver.AndroidDriverOperation.initAndroid();" +
+                                "this.driver = com.highpin.mobile.driver.AndroidDriverOperation.initDriver();" +
                                 "this.test.log(com.relevantcodes.extentreports.LogStatus.PASS, \"" + po.getDescription() + " --->> " + po.getDataSet() + "\");" +
                             "} catch (java.lang.Exception e) {" +
                                 "e.printStackTrace();" +
@@ -33,7 +33,7 @@ public class FunctionWapper {
         String time = new SimpleDateFormat("yyyy_MM_dd_HH_mm").format(new Date());
         String statements = "try {" +
                                 // 调用真实操作方法
-                                "com.highpin.mobile.driver.AndroidDriverOperation.standByAndroid(this.driver);" +
+                                "com.highpin.mobile.driver.AndroidDriverOperation.standByDriver(this.driver);" +
                                 "this.test.log(com.relevantcodes.extentreports.LogStatus.PASS, \"" + po.getDescription() + " --->> " + po.getDataSet() + "\");" +
                             "} catch (java.lang.Exception e) {" +
                                 "e.printStackTrace();" +
@@ -50,7 +50,7 @@ public class FunctionWapper {
 
     public static String destroyAndroidWrapper(ParameterObject po) {
         String statements = "try {" +
-                                "com.highpin.mobile.driver.AndroidDriverOperation.destroyAndroidDriver(this.driver);" +
+                                "com.highpin.mobile.driver.AndroidDriverOperation.destroyDriver(this.driver);" +
                                 "this.test.log(com.relevantcodes.extentreports.LogStatus.PASS, \"" + po.getDescription() + "\");" +
                             "} catch (java.lang.Exception e) {" +
                                 "e.printStackTrace();" +

@@ -1,8 +1,10 @@
 package com.highpin.mobile.driver;
 
+import com.highpin.mobile.base.BaseDriverOperation;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.ios.IOSDriver;
+import io.appium.java_client.remote.IOSMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,10 +19,10 @@ import java.net.URL;
 /**
  * Created by Administrator on 2016/3/17.
  */
-public class IOSDriverOperation {
+public class IOSDriverOperation extends BaseDriverOperation {
     public static Logger logger = LogManager.getLogger(IOSDriverOperation.class.getName());
 
-    public static AppiumDriver initIOS() throws Exception {
+    public static AppiumDriver initDriver() throws Exception {
         // 定义项目目录以及apk存放位置
         File classpathRoot = new File(System.getProperty("user.dir"));
         File appDir = new File(classpathRoot, "apps/highpin");
@@ -29,6 +31,7 @@ public class IOSDriverOperation {
         DesiredCapabilities capabilities = new DesiredCapabilities();
         capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, Platform.MAC);
         capabilities.setCapability(MobileCapabilityType.APP, app.getAbsolutePath());
+        capabilities.setCapability(IOSMobileCapabilityType.VERSION, "9.1");
 
         // 初始化Driver
         AppiumDriver<MobileElement> driver = null;
