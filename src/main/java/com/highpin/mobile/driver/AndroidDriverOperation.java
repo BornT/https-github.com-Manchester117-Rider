@@ -33,11 +33,17 @@ public class AndroidDriverOperation extends BaseDriverOperation {
         File app = new File(appDir, "highpin_V100_91zhushou.apk");
         // 定义测试工具的连接属性
         DesiredCapabilities capabilities = new DesiredCapabilities();
-        capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, Platform.ANDROID);
+        capabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, "Android");
+        capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, "4.4");
+        capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, "Android");
         capabilities.setCapability(MobileCapabilityType.APP, app.getAbsolutePath());
-        capabilities.setCapability(AndroidMobileCapabilityType.VERSION, "4.4");
-        capabilities.setCapability(AndroidMobileCapabilityType.APP_PACKAGE, "com.zhaopin.highpin");
-        capabilities.setCapability(AndroidMobileCapabilityType.APP_ACTIVITY, ".page.misc.starter");
+
+//        capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, Platform.ANDROID);
+//        capabilities.setCapability(MobileCapabilityType.APP, app.getAbsolutePath());
+//        capabilities.setCapability(AndroidMobileCapabilityType.VERSION, "4.4");
+//        capabilities.setCapability(AndroidMobileCapabilityType.APP_PACKAGE, "com.zhaopin.highpin");
+//        capabilities.setCapability(AndroidMobileCapabilityType.APP_ACTIVITY, ".page.misc.starter");
+
         // 设置Appium可以输入中文(不依赖键盘)
         capabilities.setCapability(AndroidMobileCapabilityType.UNICODE_KEYBOARD, "True");
         capabilities.setCapability(AndroidMobileCapabilityType.RESET_KEYBOARD, "True");
