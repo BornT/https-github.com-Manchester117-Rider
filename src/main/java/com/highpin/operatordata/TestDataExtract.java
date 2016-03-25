@@ -18,6 +18,7 @@ import java.util.*;
 public class TestDataExtract {
     public static Logger logger = LogManager.getLogger(TestDataExtract.class.getName());
     private File caseFolder = null;
+    private Map<String, List<InitObject>> allSheetTitleMap = new HashMap<>();
 
     public TestDataExtract() {
         this.caseFolder = new File("cases");
@@ -58,7 +59,8 @@ public class TestDataExtract {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        logger.info("所有测试数据: " + Utility.dataStructConvertJSON(multiExcelMap));
+        logger.info("所有配置参数: " + Utility.dataStructConvertJSON(this.allSheetTitleMap));
+//        logger.info("所有测试数据: " + Utility.dataStructConvertJSON(multiExcelMap));
         return multiExcelMap;
     }
 
@@ -69,6 +71,7 @@ public class TestDataExtract {
         SortedMap<String, SortedMap<String, Map<String, Object>>> singleExcelMap = null;
         SortedMap<String, Map<String, Object>> sheetMap = null;
 
+        List<InitObject> initList = new ArrayList<>();
         // 为每个Excel定义存放sheet名称的List
         List<String> sheetList = new ArrayList<>();
         // 获取Test Suite
@@ -78,7 +81,16 @@ public class TestDataExtract {
         // 遍历Test Suite每一行,获取要运行测试的Sheet名
         for (int rowIdx = 1; rowIdx < rowNum; ++rowIdx) {
             String runSheet = titleSheet.getRow(rowIdx).getCell(0).getStringCellValue();
-            String runMode = titleSheet.getRow(rowIdx).getCell(2).getStringCellValue();
+            // 获取每个Driver的初始化参数
+            InitObject initObject = new InitObject();
+            initObject.setPlatformName(titleSheet.getRow(rowIdx).getCell(2).getStringCellValue());
+            initObject.setPlatformVersion(titleSheet.getRow(rowIdx).getCell(3).getStringCellValue());
+            initObject.setDeviceName(titleSheet.getRow(rowIdx).getCell(4).getStringCellValue());
+            initObject.setAppName(titleSheet.getRow(rowIdx).getCell(5).getStringCellValue());
+            // 将每个Driver的初始化参数放到列表中
+            initList.add(initObject);
+
+            String runMode = titleSheet.getRow(rowIdx).getCell(6).getStringCellValue();
             // 如果Sheet的RunMode是'Yes'则将这个Sheet名放置到列表当中
             if ("Yes".equalsIgnoreCase(runMode)) {
                 sheetList.add(runSheet);
@@ -94,7 +106,7 @@ public class TestDataExtract {
             // 需要在此处插入验证点
             singleExcelMap.put(sheetName, sheetMap);
         }
-        logger.info("单个Excel数据: " + Utility.dataStructConvertJSON(singleExcelMap));
+//        logger.info("单个Excel数据: " + Utility.dataStructConvertJSON(singleExcelMap));
         return singleExcelMap;
     }
 
@@ -118,7 +130,7 @@ public class TestDataExtract {
                 // 获取Sheet的字段Value
                 String value = testCaseSheet.getRow(rowIdx).getCell(colIdx).getStringCellValue().trim();
                 // 获取步骤ID
-                String testStepID = testCaseSheet.getRow(rowIdx).getCell(0).getStringCellValue().trim();
+                // String testStepID = testCaseSheet.getRow(rowIdx).getCell(0).getStringCellValue().trim();
                 // 根据字段获取数据
                 if (title.equals("Test_Step_ID") && !value.isEmpty()) {
                     sheetMap.put(value, stepMap);
@@ -158,7 +170,7 @@ public class TestDataExtract {
                 }
             }
         }
-        logger.info("单个Sheet页数据: " + Utility.dataStructConvertJSON(sheetMap));
+//        logger.info("单个Sheet页数据: " + Utility.dataStructConvertJSON(sheetMap));
         return sheetMap;
     }
 

@@ -4,11 +4,9 @@ import com.highpin.mobile.base.BaseDriverOperation;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.ios.IOSDriver;
-import io.appium.java_client.remote.IOSMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.File;
@@ -29,9 +27,10 @@ public class IOSDriverOperation extends BaseDriverOperation {
         File app = new File(appDir, "highpin_V100_91zhushou.apk");
         // 定义测试工具的连接属性
         DesiredCapabilities capabilities = new DesiredCapabilities();
-        capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, Platform.MAC);
+        capabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, "ios");
+        capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, "8.1");
+        capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, "iPhone");
         capabilities.setCapability(MobileCapabilityType.APP, app.getAbsolutePath());
-        capabilities.setCapability(IOSMobileCapabilityType.VERSION, "9.1");
 
         // 初始化Driver
         AppiumDriver<MobileElement> driver = null;

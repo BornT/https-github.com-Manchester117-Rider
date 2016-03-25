@@ -39,7 +39,6 @@ public class ClassGenerator {
     private List<List<List<Object>>> methodVerifyTypeList = null;
     private List<List<List<Object>>> methodVerifyTargetList = null;
     private List<List<List<Object>>> methodVerifyValueList = null;
-
     private List<List<List<Object>>> methodScreenCaptureList = null;
 
     public static Logger logger = LogManager.getLogger(ClassGenerator.class.getName());
@@ -121,7 +120,7 @@ public class ClassGenerator {
                 }
             }
         }
-//        System.out.println(this.ctList);
+//        logger.info(this.ctList);
     }
 
     public void insertMethod() {
@@ -221,10 +220,10 @@ public class ClassGenerator {
                 ctMethod = caseCtClass.getDeclaredMethod(po.getMethodName());
                 if (po.getMethodName().equalsIgnoreCase("initAndroid") && po.getActionType().isEmpty()) {
                     ctMethod.insertAfter(FunctionWapper.initAndroidWrapper(po));
-                } else if (po.getMethodName().equalsIgnoreCase("standByAndroid") && po.getActionType().isEmpty()) {
-                    ctMethod.insertAfter(FunctionWapper.standByAndroidWrapper(po));
                 } else if (po.getMethodName().equalsIgnoreCase("destroyAndroid") && po.getActionType().isEmpty()) {
                     ctMethod.insertAfter(FunctionWapper.destroyAndroidWrapper(po));
+                } else if (po.getMethodName().startsWith("standBy") && po.getActionType().isEmpty()) {
+                    ctMethod.insertAfter(FunctionWapper.standByDriverWrapper(po));
                 } else if (po.getMethodName().startsWith("wait") && po.getActionType().isEmpty() && !po.getDataSet().isEmpty()) {
                     ctMethod.insertAfter(FunctionWapper.waitAction(po));
                 } else {
