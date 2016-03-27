@@ -2,7 +2,8 @@ package com.highpin.generator.core;
 
 import com.highpin.mobile.param.ParameterObject;
 import com.highpin.mobile.wrapper.FunctionWapper;
-import com.highpin.operatordata.ReadStruct;
+import com.highpin.operatordata.ReadInitStruct;
+import com.highpin.operatordata.ReadTestStruct;
 import com.highpin.operatordata.TestDataExtract;
 import javassist.*;
 import javassist.bytecode.AnnotationsAttribute;
@@ -18,6 +19,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2016/3/18.
@@ -28,6 +30,7 @@ public class ClassGenerator {
     private List<List<CtClass>> ctList = null;
     private List<String> suiteList = null;
     private List<List<String>> classNameList = null;
+    private List<List<Map<String, Object>>> initList = null;
 
     private List<List<List<Object>>> methodNameList = null;
     private List<List<List<Object>>> methodDescriptionList = null;
@@ -48,23 +51,27 @@ public class ClassGenerator {
      */
     public ClassGenerator() {
         this.cPool = ClassPool.getDefault();
-        TestDataExtract tdExtract = new TestDataExtract();
-        ReadStruct rs = new ReadStruct(tdExtract.getAllExcelData());
+        TestDataExtract tde = new TestDataExtract();
+        tde.createAllExcelTestData();
+        ReadTestStruct readTestStruct = new ReadTestStruct(tde.getAllExcelTestData());
+        ReadInitStruct readInitStruct = new ReadInitStruct(tde.getAllExcelInitData());
 
-        this.suiteList = rs.getTestSuiteName();
-        this.classNameList = rs.getAllClassName();
-        this.methodNameList = rs.getSheetField("Action_Keyword");
-        this.methodDescriptionList = rs.getSheetField("Description");
-        this.methodActionTypeList = rs.getSheetField("Action_Type");
-        this.methodLocatorTypeList = rs.getSheetField("Locator_Type");
-        this.methodLocatorValueList = rs.getSheetField("Locator_Value");
-        this.methodDataSetList = rs.getSheetField("Data_Set");
-        this.methodVerifyTypeList = rs.getSheetField("Verify_Type");
-        this.methodVerifyTargetList = rs.getSheetField("Verify_Target");
-        this.methodVerifyValueList = rs.getSheetField("Verify_Value");
-        this.methodScreenCaptureList = rs.getSheetField("Screen_Capture");
+        this.initList = readInitStruct.getInitField();
 
-        logger.info("获取测试数据结构,从数据结构中取出所有测试数据,以列表形式存储");
+        this.suiteList = readTestStruct.getTestSuiteName();
+        this.classNameList = readTestStruct.getAllClassName();
+        this.methodNameList = readTestStruct.getSheetField("Action_Keyword");
+        this.methodDescriptionList = readTestStruct.getSheetField("Description");
+        this.methodActionTypeList = readTestStruct.getSheetField("Action_Type");
+        this.methodLocatorTypeList = readTestStruct.getSheetField("Locator_Type");
+        this.methodLocatorValueList = readTestStruct.getSheetField("Locator_Value");
+        this.methodDataSetList = readTestStruct.getSheetField("Data_Set");
+        this.methodVerifyTypeList = readTestStruct.getSheetField("Verify_Type");
+        this.methodVerifyTargetList = readTestStruct.getSheetField("Verify_Target");
+        this.methodVerifyValueList = readTestStruct.getSheetField("Verify_Value");
+        this.methodScreenCaptureList = readTestStruct.getSheetField("Screen_Capture");
+
+        logger.info("获取测试数据结构,从数据结构中取出所有测试数据,以列表形式存储.");
     }
 
     /**
@@ -90,7 +97,6 @@ public class ClassGenerator {
      */
     public void insertField() {
         CtField ctFieldDriver = null;
-        CtField ctFieldDesiredCapabilities  = null;
         CtField ctFieldExtentReports = null;
         CtField ctFieldExtentTest = null;
         for (List<CtClass> suiteCtList : this.ctList) {
@@ -99,9 +105,6 @@ public class ClassGenerator {
                     // 加入AppiumDriver成员
                     ctFieldDriver = new CtField(this.cPool.getCtClass("io.appium.java_client.AppiumDriver"), "driver", ct);
                     ctFieldDriver.setModifiers(Modifier.PRIVATE);
-                    // 加入App属性控制
-                    ctFieldDesiredCapabilities = new CtField(this.cPool.getCtClass("org.openqa.selenium.remote.DesiredCapabilities"), "capabilities", ct);
-                    ctFieldDesiredCapabilities.setModifiers(Modifier.PRIVATE);
                     // 加入ExtentReports成员
                     ctFieldExtentReports = new CtField(this.cPool.getCtClass("com.relevantcodes.extentreports.ExtentReports"), "extent", ct);
                     ctFieldExtentReports.setModifiers(Modifier.PRIVATE);
@@ -110,7 +113,6 @@ public class ClassGenerator {
                     ctFieldExtentTest.setModifiers(Modifier.PRIVATE);
 
                     ct.addField(ctFieldDriver);
-                    ct.addField(ctFieldDesiredCapabilities);
                     ct.addField(ctFieldExtentReports);
                     ct.addField(ctFieldExtentTest);
                     logger.info("向类当中添加属性");
@@ -215,16 +217,25 @@ public class ClassGenerator {
             po.setVerifyValue(this.methodVerifyValueList.get(suiteCtIndex).get(caseCtIndex).get(methodIndex));
             po.setScreenCapture(this.methodScreenCaptureList.get(suiteCtIndex).get(caseCtIndex).get(methodIndex).toString());
 
+            String platformName = this.initList.get(suiteCtIndex).get(caseCtIndex).get("platformName").toString();
+            String platformVersion = this.initList.get(suiteCtIndex).get(caseCtIndex).get("platformVersion").toString();
+            String deviceName = this.initList.get(suiteCtIndex).get(caseCtIndex).get("deviceName").toString();
+            String appName = this.initList.get(suiteCtIndex).get(caseCtIndex).get("appName").toString();
+
             CtMethod ctMethod = null;
             try {
                 ctMethod = caseCtClass.getDeclaredMethod(po.getMethodName());
-                if (po.getMethodName().equalsIgnoreCase("initAndroid") && po.getActionType().isEmpty()) {
-                    ctMethod.insertAfter(FunctionWapper.initAndroidWrapper(po));
-                } else if (po.getMethodName().equalsIgnoreCase("destroyAndroid") && po.getActionType().isEmpty()) {
+                if (po.getMethodName().equalsIgnoreCase("initDriver") && deviceName.equalsIgnoreCase("Android")) {
+                    ctMethod.insertAfter(FunctionWapper.initAndroidWrapper(po, appName, platformName, platformVersion, deviceName));
+                } else if (po.getMethodName().equalsIgnoreCase("destroyDriver") && deviceName.equalsIgnoreCase("Android")) {
                     ctMethod.insertAfter(FunctionWapper.destroyAndroidWrapper(po));
-                } else if (po.getMethodName().startsWith("standBy") && po.getActionType().isEmpty()) {
+                } else if (po.getMethodName().equalsIgnoreCase("initDriver") && deviceName.equalsIgnoreCase("iPhone")) {
+                    ctMethod.insertAfter(FunctionWapper.initIOSWrapper(po, appName, platformName, platformVersion, deviceName));
+                } else if (po.getMethodName().equalsIgnoreCase("destroyDriver") && deviceName.equalsIgnoreCase("iPhone")) {
+                    ctMethod.insertAfter(FunctionWapper.destroyIOSWrapper(po));
+                } else if (po.getMethodName().equalsIgnoreCase("standByDriver")) {
                     ctMethod.insertAfter(FunctionWapper.standByDriverWrapper(po));
-                } else if (po.getMethodName().startsWith("wait") && po.getActionType().isEmpty() && !po.getDataSet().isEmpty()) {
+                } else if (po.getMethodName().startsWith("wait")) {
                     ctMethod.insertAfter(FunctionWapper.waitAction(po));
                 } else {
                     ctMethod.insertAfter(FunctionWapper.operationWrapper(po));

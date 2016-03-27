@@ -20,16 +20,16 @@ import java.net.URL;
 public class IOSDriverOperation extends BaseDriverOperation {
     public static Logger logger = LogManager.getLogger(IOSDriverOperation.class.getName());
 
-    public static AppiumDriver initDriver() throws Exception {
+    public static AppiumDriver initDriver(String appName, String platformName, String platformVersion, String deviceName) throws Exception {
         // 定义项目目录以及apk存放位置
         File classpathRoot = new File(System.getProperty("user.dir"));
         File appDir = new File(classpathRoot, "apps/highpin");
-        File app = new File(appDir, "highpin_V100_91zhushou.apk");
+        File app = new File(appDir, appName);
         // 定义测试工具的连接属性
         DesiredCapabilities capabilities = new DesiredCapabilities();
-        capabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, "ios");
-        capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, "8.1");
-        capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, "iPhone");
+        capabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, platformName);
+        capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, platformVersion);
+        capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, deviceName);
         capabilities.setCapability(MobileCapabilityType.APP, app.getAbsolutePath());
 
         // 初始化Driver

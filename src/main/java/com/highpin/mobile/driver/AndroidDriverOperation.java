@@ -24,23 +24,17 @@ public class AndroidDriverOperation extends BaseDriverOperation {
     public static Logger logger = LogManager.getLogger(AndroidDriverOperation.class.getName());
 
     // 初始化AndroidDriver
-    public static AppiumDriver initDriver() throws Exception {
+    public static AppiumDriver initDriver(String appName, String platformName, String platformVersion, String deviceName) throws Exception {
         // 定义项目目录以及apk存放位置
         File classpathRoot = new File(System.getProperty("user.dir"));
         File appDir = new File(classpathRoot, "apps/highpin");
-        File app = new File(appDir, "highpin_V100_91zhushou.apk");
+        File app = new File(appDir, appName);
         // 定义测试工具的连接属性
         DesiredCapabilities capabilities = new DesiredCapabilities();
-        capabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, "Android");
-        capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, "4.4");
-        capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, "Android");
+        capabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, platformName);
+        capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, platformVersion);
+        capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, deviceName);
         capabilities.setCapability(MobileCapabilityType.APP, app.getAbsolutePath());
-
-//        capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, Platform.ANDROID);
-//        capabilities.setCapability(MobileCapabilityType.APP, app.getAbsolutePath());
-//        capabilities.setCapability(AndroidMobileCapabilityType.VERSION, "4.4");
-//        capabilities.setCapability(AndroidMobileCapabilityType.APP_PACKAGE, "com.zhaopin.highpin");
-//        capabilities.setCapability(AndroidMobileCapabilityType.APP_ACTIVITY, ".page.misc.starter");
 
         // 设置Appium可以输入中文(不依赖键盘)
         capabilities.setCapability(AndroidMobileCapabilityType.UNICODE_KEYBOARD, "True");

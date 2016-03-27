@@ -18,19 +18,20 @@ import java.util.*;
 public class TestDataExtract {
     public static Logger logger = LogManager.getLogger(TestDataExtract.class.getName());
     private File caseFolder = null;
-    private Map<String, List<InitObject>> allSheetTitleMap = new HashMap<>();
+    private SortedMap<String, SortedMap<String, SortedMap<String, Map<String, Object>>>> allExcelTestMap = new TreeMap<>();
+    private SortedMap<String, SortedMap<String, Map<String, Object>>> allExcelInitMap = new TreeMap<>();
 
     public TestDataExtract() {
         this.caseFolder = new File("cases");
     }
 
-    public SortedMap<String, SortedMap<String, SortedMap<String, Map<String, Object>>>> getAllExcelData() {
+    public void createAllExcelTestData() {
         File [] caseList = this.caseFolder.listFiles();
         InputStream is = null;
         XSSFWorkbook excelWBook = null;
 
-        SortedMap<String, SortedMap<String, SortedMap<String, Map<String, Object>>>>  multiExcelMap = new TreeMap<>();
         SortedMap<String, SortedMap<String, Map<String, Object>>> singleExcelMap = null;
+        SortedMap<String, Map<String,Object>> initSheetMap = null;
 
         try {
             // 如果cases文件夹不为空并且cases文件夹中的文件数量大于0才会执行获取Excel handler的操作
@@ -47,8 +48,11 @@ public class TestDataExtract {
                         is = new FileInputStream(excelCaseFile.getAbsoluteFile());
                         excelWBook = new XSSFWorkbook(is);
                         // 获取可运行的sheet以及sheet中的数据
-                        singleExcelMap = this.getSingleExcelData(excelWBook);
-                        multiExcelMap.put(excelName, singleExcelMap);
+                        singleExcelMap = this.getSingleExcelTestData(excelWBook);
+                        this.allExcelTestMap.put(excelName, singleExcelMap);
+                        // 获取每个sheet的初始化参数
+                        initSheetMap = this.getSingleExcelTitleData(excelWBook);
+                        this.allExcelInitMap.put(excelName, initSheetMap);
                     }
                 }
             }
@@ -59,54 +63,43 @@ public class TestDataExtract {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        logger.info("所有配置参数: " + Utility.dataStructConvertJSON(this.allSheetTitleMap));
-//        logger.info("所有测试数据: " + Utility.dataStructConvertJSON(multiExcelMap));
-        return multiExcelMap;
+//        System.out.println(this.allExcelInitMap);
+//        System.out.println(this.allExcelTestMap);
+        logger.info("所有配置参数: " + Utility.dataStructConvertJSON(this.allExcelInitMap));
+        logger.info("所有测试数据: " + Utility.dataStructConvertJSON(this.allExcelTestMap));
     }
 
-    public SortedMap<String, SortedMap<String, Map<String, Object>>> getSingleExcelData(XSSFWorkbook excelWBook) {
+    public SortedMap<String, SortedMap<String, Map<String, Object>>> getSingleExcelTestData(XSSFWorkbook excelWBook) {
         XSSFSheet titleSheet = null;
         XSSFSheet testCaseSheet = null;
 
         SortedMap<String, SortedMap<String, Map<String, Object>>> singleExcelMap = null;
         SortedMap<String, Map<String, Object>> sheetMap = null;
 
-        List<InitObject> initList = new ArrayList<>();
-        // 为每个Excel定义存放sheet名称的List
-        List<String> sheetList = new ArrayList<>();
+        List<String> initSheetList = new ArrayList<>();
         // 获取Test Suite
         titleSheet = excelWBook.getSheet("Test Suite");
         // 获取Test Suite的行数
         int rowNum = titleSheet.getPhysicalNumberOfRows();
         // 遍历Test Suite每一行,获取要运行测试的Sheet名
         for (int rowIdx = 1; rowIdx < rowNum; ++rowIdx) {
-            String runSheet = titleSheet.getRow(rowIdx).getCell(0).getStringCellValue();
-            // 获取每个Driver的初始化参数
-            InitObject initObject = new InitObject();
-            initObject.setPlatformName(titleSheet.getRow(rowIdx).getCell(2).getStringCellValue());
-            initObject.setPlatformVersion(titleSheet.getRow(rowIdx).getCell(3).getStringCellValue());
-            initObject.setDeviceName(titleSheet.getRow(rowIdx).getCell(4).getStringCellValue());
-            initObject.setAppName(titleSheet.getRow(rowIdx).getCell(5).getStringCellValue());
-            // 将每个Driver的初始化参数放到列表中
-            initList.add(initObject);
-
+            String sheetName = titleSheet.getRow(rowIdx).getCell(0).getStringCellValue();
             String runMode = titleSheet.getRow(rowIdx).getCell(6).getStringCellValue();
-            // 如果Sheet的RunMode是'Yes'则将这个Sheet名放置到列表当中
+            // 如果Sheet的RunMode是'Yes'则将这个Sheet放置到列表当中
             if ("Yes".equalsIgnoreCase(runMode)) {
-                sheetList.add(runSheet);
+                initSheetList.add(sheetName);
             }
         }
         // 创建单个Excel的数据结构
         singleExcelMap = new TreeMap<>();
-        // 遍历每个要运行测试的sheet名
-        for (String sheetName : sheetList) {
+        for (String runSheet : initSheetList) {
             // 通过sheet名获取sheet
-            testCaseSheet = excelWBook.getSheet(sheetName);
+            testCaseSheet = excelWBook.getSheet(runSheet);
             sheetMap = this.getSheetData(testCaseSheet);
             // 需要在此处插入验证点
-            singleExcelMap.put(sheetName, sheetMap);
+            singleExcelMap.put(runSheet, sheetMap);
         }
-//        logger.info("单个Excel数据: " + Utility.dataStructConvertJSON(singleExcelMap));
+        logger.info("单个Excel数据: " + Utility.dataStructConvertJSON(singleExcelMap));
         return singleExcelMap;
     }
 
@@ -129,8 +122,6 @@ public class TestDataExtract {
                 String title = testCaseSheet.getRow(0).getCell(colIdx).getStringCellValue().trim();
                 // 获取Sheet的字段Value
                 String value = testCaseSheet.getRow(rowIdx).getCell(colIdx).getStringCellValue().trim();
-                // 获取步骤ID
-                // String testStepID = testCaseSheet.getRow(rowIdx).getCell(0).getStringCellValue().trim();
                 // 根据字段获取数据
                 if (title.equals("Test_Step_ID") && !value.isEmpty()) {
                     sheetMap.put(value, stepMap);
@@ -174,8 +165,47 @@ public class TestDataExtract {
         return sheetMap;
     }
 
+    public SortedMap<String, Map<String, Object>> getSingleExcelTitleData(XSSFWorkbook excelWBook) {
+        XSSFSheet titleSheet = null;
+        // 为每个Excel定义存放sheet属性的Map
+        SortedMap<String, Map<String, Object>> initSheetMap = new TreeMap<>();
+        // 获取Test Suite
+        titleSheet = excelWBook.getSheet("Test Suite");
+        // 获取Test Suite的行数
+        int rowNum = titleSheet.getPhysicalNumberOfRows();
+        // 遍历Test Suite每一行,获取要运行测试的Sheet名
+        for (int rowIdx = 1; rowIdx < rowNum; ++rowIdx) {
+            String sheetName = titleSheet.getRow(rowIdx).getCell(0).getStringCellValue();
+            // 获取每个Driver的初始化参数
+            Map<String, Object> initItem = new HashMap<>();
+            initItem.put("platformName", titleSheet.getRow(rowIdx).getCell(2).getStringCellValue());
+            initItem.put("platformVersion", titleSheet.getRow(rowIdx).getCell(3).getStringCellValue());
+            initItem.put("deviceName", titleSheet.getRow(rowIdx).getCell(4).getStringCellValue());
+            initItem.put("appName", titleSheet.getRow(rowIdx).getCell(5).getStringCellValue());
+            initItem.put("runMode", titleSheet.getRow(rowIdx).getCell(6).getStringCellValue());
+
+            // 如果Sheet的RunMode是'Yes'则将这个Sheet放置到列表当中
+            if ("Yes".equalsIgnoreCase(initItem.get("runMode").toString())) {
+                initSheetMap.put(sheetName, initItem);
+            }
+        }
+        logger.info("单个Excel运行Title: " + Utility.dataStructConvertJSON(initSheetMap));
+        return initSheetMap;
+    }
+
+    public SortedMap<String, SortedMap<String, SortedMap<String, Map<String, Object>>>> getAllExcelTestData() {
+        // 返回所有Excel测试类的测试数据
+        return this.allExcelTestMap;
+    }
+
+    public SortedMap<String, SortedMap<String, Map<String, Object>>> getAllExcelInitData() {
+        // 返回所有Excel测试类的初始化参数
+        return this.allExcelInitMap;
+    }
+
     public static void main(String[] args) {
         TestDataExtract eo = new TestDataExtract();
-        eo.getAllExcelData();
+        eo.createAllExcelTestData();
+        eo.getAllExcelTestData();
     }
 }

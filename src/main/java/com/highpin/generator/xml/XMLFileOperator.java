@@ -1,6 +1,6 @@
 package com.highpin.generator.xml;
 
-import com.highpin.operatordata.ReadStruct;
+import com.highpin.operatordata.ReadTestStruct;
 import com.highpin.operatordata.TestDataExtract;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,7 +30,8 @@ public class XMLFileOperator {
      */
     public XMLFileOperator() throws Exception {
         TestDataExtract tde = new TestDataExtract();
-        ReadStruct rs = new ReadStruct(tde.getAllExcelData());
+        tde.createAllExcelTestData();
+        ReadTestStruct rs = new ReadTestStruct(tde.getAllExcelTestData());
 
         this.allSuiteList = rs.getTestSuiteName();
         this.allClassNameList = rs.getAllClassName();

@@ -9,15 +9,15 @@ import java.util.*;
 /**
  * Created by Administrator on 2016/3/17.
  */
-public class ReadStruct {
+public class ReadTestStruct {
     private SortedMap<String, SortedMap<String, SortedMap<String, Map<String, Object>>>> suiteMap = null;
-    public static Logger logger = LogManager.getLogger(ReadStruct.class.getName());
+    public static Logger logger = LogManager.getLogger(ReadTestStruct.class.getName());
 
     /**
      * @param suiteMap -- 测试数据结构
      * @Description: 构造方法 -- 从测试数据结构中获取数据
      */
-    public ReadStruct(SortedMap<String, SortedMap<String, SortedMap<String, Map<String, Object>>>> suiteMap) {
+    public ReadTestStruct(SortedMap<String, SortedMap<String, SortedMap<String, Map<String, Object>>>> suiteMap) {
         this.suiteMap = suiteMap;
     }
 
@@ -100,7 +100,8 @@ public class ReadStruct {
 
     public static void main(String[] args) throws Exception {
         TestDataExtract tde = new TestDataExtract();
-        ReadStruct rs = new ReadStruct(tde.getAllExcelData());
+        tde.createAllExcelTestData();
+        ReadTestStruct rs = new ReadTestStruct(tde.getAllExcelTestData());
         rs.getTestSuiteName();
         rs.getAllClassName();
         rs.getSheetField("Element_Type");

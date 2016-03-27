@@ -9,7 +9,7 @@ import java.util.Date;
  * Created by Administrator on 2016/3/19.
  */
 public class FunctionWapper {
-    public static String initAndroidWrapper(ParameterObject po) {
+    public static String initAndroidWrapper(ParameterObject po, String appName, String platformName, String platformVersion, String deviceName) {
         String time = new SimpleDateFormat("yyyy_MM_dd_HH_mm").format(new Date());
         String statements = "this.extent = new com.relevantcodes.extentreports.ExtentReports(\"reports/" + po.getSuiteName() + "_" + time + "/Automation Test Report-HighPin-MIK.html\", java.lang.Boolean.FALSE);" +
                             "this.extent.addSystemInfo(\"Appium Version\", \"1.4.16.1\");" +
@@ -19,7 +19,7 @@ public class FunctionWapper {
                             "this.test = this.extent.startTest(\"" + po.getClassName() + "\", \"HighPin Automation Test\");" +
                             "try {" +
                                 // 调用真实操作方法
-                                "this.driver = com.highpin.mobile.driver.AndroidDriverOperation.initDriver();" +
+                                "this.driver = com.highpin.mobile.driver.AndroidDriverOperation.initDriver(\"" + appName + "\", \"" + platformName + "\", \"" + platformVersion + "\", \"" + deviceName + "\");" +
                                 "this.test.log(com.relevantcodes.extentreports.LogStatus.PASS, \"" + po.getDescription() + " --->> " + po.getDataSet() + "\");" +
                             "} catch (java.lang.Exception e) {" +
                                 "e.printStackTrace();" +
@@ -28,7 +28,7 @@ public class FunctionWapper {
         return statements;
     }
 
-    public static String initIOSWrapper(ParameterObject po) {
+    public static String initIOSWrapper(ParameterObject po, String appName, String platformName, String platformVersion, String deviceName) {
         String time = new SimpleDateFormat("yyyy_MM_dd_HH_mm").format(new Date());
         String statements = "this.extent = new com.relevantcodes.extentreports.ExtentReports(\"reports/" + po.getSuiteName() + "_" + time + "/Automation Test Report-HighPin-MIK.html\", java.lang.Boolean.FALSE);" +
                             "this.extent.addSystemInfo(\"Appium Version\", \"1.4.16.1\");" +
@@ -38,7 +38,7 @@ public class FunctionWapper {
                             "this.test = this.extent.startTest(\"" + po.getClassName() + "\", \"HighPin Automation Test\");" +
                             "try {" +
                                 // 调用真实操作方法
-                                "this.driver = com.highpin.mobile.driver.IOSDriverOperation.initDriver();" +
+                                "this.driver = com.highpin.mobile.driver.IOSDriverOperation.initDriver(\"" + appName + "\", \"" + platformName + "\", \"" + platformVersion + "\", \"" + deviceName + "\");" +
                                 "this.test.log(com.relevantcodes.extentreports.LogStatus.PASS, \"" + po.getDescription() + " --->> " + po.getDataSet() + "\");" +
                             "} catch (java.lang.Exception e) {" +
                                 "e.printStackTrace();" +
@@ -94,7 +94,7 @@ public class FunctionWapper {
                                     "this.test.log(com.relevantcodes.extentreports.LogStatus.INFO, \"截图 -- " + po.getDescription() + ": \" + this.test.addScreenCapture(imgPath));" +
                                 "}" +
                             "}";
-        System.out.println(statements);
+//        System.out.println(statements);
         return statements;
     }
 
