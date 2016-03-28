@@ -1,5 +1,6 @@
 package com.highpin.mobile.wrapper;
 
+import com.highpin.check.VerifyModule;
 import com.highpin.mobile.param.ParameterObject;
 
 import java.text.SimpleDateFormat;
@@ -137,10 +138,12 @@ public class FunctionWapper {
         } else {
             System.out.println("不正确的操作类型");
         }
+        String verifyFun = VerifyModule.appendVerifyContentStatement(po);
         String time = new SimpleDateFormat("yyyy_MM_dd_HH_mm").format(new Date());
         String statements = "try {" +
                                 realFun +
                                 "this.test.log(com.relevantcodes.extentreports.LogStatus.PASS, \"" + po.getDescription() + " --->> " + po.getLocValue() + "\");" +
+                                verifyFun +
                             "} catch (java.lang.Exception e) {" +
                                 "this.test.log(com.relevantcodes.extentreports.LogStatus.FAIL, \"" + po.getDescription() + " --->> " + po.getLocValue() + "\" + \":  \" + e.getMessage());" +
                             "} finally {" +
