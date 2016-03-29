@@ -5,6 +5,7 @@ import io.appium.java_client.MobileElement;
 import io.appium.java_client.TouchAction;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -16,8 +17,16 @@ import java.util.concurrent.TimeUnit;
 public class BaseDriverOperation {
     public static Logger logger = LogManager.getLogger(BaseDriverOperation.class.getName());
 
-    public static void standByDriver(AppiumDriver<MobileElement> driver) throws Exception {
+    public static void standByApp(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue) throws Exception {
         driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+        WebDriverWait wait = new WebDriverWait(driver, 15);
+        if (locatorType.equalsIgnoreCase("id")) {
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(locatorValue)));
+        } else if (locatorType.equalsIgnoreCase("xpath")) {
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(locatorValue)));
+        } else {
+            logger.error("启动页不可识别");
+        }
     }
 
     public static void destroyDriver(AppiumDriver<MobileElement> driver) throws Exception{
@@ -189,7 +198,7 @@ public class BaseDriverOperation {
             int swipeTimes = Integer.parseInt(dataSet);
             for (int i = 0; i < swipeTimes; ++i) {
                 Thread.sleep(1000);
-                driver.swipe(width * 4 / 5, height / 2, width / 20, height / 2, 500);
+                driver.swipe(width * 4 / 5, height / 2, width / 20, height / 2, 1000);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -204,7 +213,7 @@ public class BaseDriverOperation {
             int swipeTimes = Integer.parseInt(dataSet);
             for (int i = 0; i < swipeTimes; ++i) {
                 Thread.sleep(1000);
-                driver.swipe(width / 5, height / 2, width * 19 / 20, height / 2, 500);
+                driver.swipe(width / 5, height / 2, width * 19 / 20, height / 2, 1000);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -219,7 +228,7 @@ public class BaseDriverOperation {
             int swipeTimes = Integer.parseInt(dataSet);
             for (int i = 0; i < swipeTimes; ++i) {
                 Thread.sleep(1000);
-                driver.swipe(width / 2, height * 4 / 5, width / 2, height / 20, 500);
+                driver.swipe(width / 2, height * 4 / 5, width / 2, height / 20, 1000);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -234,7 +243,7 @@ public class BaseDriverOperation {
             int swipeTimes = Integer.parseInt(dataSet);
             for (int i = 0; i < swipeTimes; ++i) {
                 Thread.sleep(1000);
-                driver.swipe(width / 2, height / 5, width / 2, height * 19 / 20, 500);
+                driver.swipe(width / 2, height / 5, width / 2, height * 19 / 20, 1000);
             }
         } catch (Exception e) {
             e.printStackTrace();

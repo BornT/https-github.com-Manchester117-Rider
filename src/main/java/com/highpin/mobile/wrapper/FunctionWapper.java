@@ -1,6 +1,5 @@
 package com.highpin.mobile.wrapper;
 
-import com.highpin.check.VerifyModule;
 import com.highpin.mobile.param.ParameterObject;
 
 import java.text.SimpleDateFormat;
@@ -81,11 +80,11 @@ public class FunctionWapper {
         return statements;
     }
 
-    public static String standByDriverWrapper(ParameterObject po) {
+    public static String standByAppWrapper(ParameterObject po) {
         String time = new SimpleDateFormat("yyyy_MM_dd_HH_mm").format(new Date());
         String statements = "try {" +
                                 // 调用真实操作方法
-                                "com.highpin.mobile.base.BaseDriverOperation.standByDriver(this.driver);" +
+                                "com.highpin.mobile.base.BaseDriverOperation.standByApp(this.driver, \"" + po.getLocType() + "\", \"" + po.getLocValue() + "\");" +
                                 "this.test.log(com.relevantcodes.extentreports.LogStatus.PASS, \"" + po.getDescription() + " --->> " + po.getDataSet() + "\");" +
                             "} catch (java.lang.Exception e) {" +
                                 "e.printStackTrace();" +
@@ -96,14 +95,18 @@ public class FunctionWapper {
                                     "this.test.log(com.relevantcodes.extentreports.LogStatus.INFO, \"截图 -- " + po.getDescription() + ": \" + this.test.addScreenCapture(imgPath));" +
                                 "}" +
                             "}";
-//        System.out.println(statements);
+        System.out.println(statements);
         return statements;
     }
 
     public static String waitAction(ParameterObject po) {
         String realFun = null;
+        String verifyStatement = null;
         if (po.getMethodName().startsWith("wait")) {
-            realFun = "com.highpin.mobile.base.BaseDriverOperation.waitAction(\"" + po.getDataSet() + "\");";
+            realFun = "boolean flag = false;" +
+                      "com.highpin.mobile.base.BaseDriverOperation.waitAction(\"" + po.getDataSet() + "\");";
+            verifyStatement = FunctionWapper.appendVerify(po);
+            realFun += verifyStatement;
         }
         return realFun;
     }
@@ -140,6 +143,25 @@ public class FunctionWapper {
             System.out.println("不正确的操作类型");
         }
 
+        String time = new SimpleDateFormat("yyyy_MM_dd_HH_mm").format(new Date());
+        String statements = "try {" +
+                                realFun +
+                                "this.test.log(com.relevantcodes.extentreports.LogStatus.PASS, \"" + po.getDescription() + " --->> " + po.getLocValue() + "\");" +
+                                "boolean flag = false;" +
+                                FunctionWapper.appendVerify(po) +
+                            "} catch (java.lang.Exception e) {" +
+                                "this.test.log(com.relevantcodes.extentreports.LogStatus.FAIL, \"" + po.getDescription() + " --->> " + po.getLocValue() + "\" + \":  \" + e.getMessage());" +
+                            "} finally {" +
+                                "if (\"Yes\".equalsIgnoreCase(\"" + po.getScreenCapture() + "\")) {" +
+                                    "java.lang.String imgPath = com.highpin.tools.Utility.captureScreenShot(this.driver, \"" + po.getSuiteName() + "_" + time + "\", \"" + po.getClassName() + "_" + po.getDescription() + "\");" +
+                                    "this.test.log(com.relevantcodes.extentreports.LogStatus.INFO, \"截图 -- " + po.getDescription() + ": \" + this.test.addScreenCapture(imgPath));" +
+                                "}" +
+                            "}";
+//        System.out.println(statements);
+        return statements;
+    }
+
+    private static String appendVerify(ParameterObject po) {
         List<?> verifyTypeList = po.getVerifyType();
         List<?> verifyTargetList = po.getVerifyTarget();
         List<?> verifyValueList = po.getVerifyValue();
@@ -160,22 +182,6 @@ public class FunctionWapper {
                 }
             }
         }
-
-        String time = new SimpleDateFormat("yyyy_MM_dd_HH_mm").format(new Date());
-        String statements = "try {" +
-                                realFun +
-                                "this.test.log(com.relevantcodes.extentreports.LogStatus.PASS, \"" + po.getDescription() + " --->> " + po.getLocValue() + "\");" +
-                                "boolean flag = false;" +
-                                verifyFun +
-                            "} catch (java.lang.Exception e) {" +
-                                "this.test.log(com.relevantcodes.extentreports.LogStatus.FAIL, \"" + po.getDescription() + " --->> " + po.getLocValue() + "\" + \":  \" + e.getMessage());" +
-                            "} finally {" +
-                                "if (\"Yes\".equalsIgnoreCase(\"" + po.getScreenCapture() + "\")) {" +
-                                    "java.lang.String imgPath = com.highpin.tools.Utility.captureScreenShot(this.driver, \"" + po.getSuiteName() + "_" + time + "\", \"" + po.getClassName() + "_" + po.getDescription() + "\");" +
-                                    "this.test.log(com.relevantcodes.extentreports.LogStatus.INFO, \"截图 -- " + po.getDescription() + ": \" + this.test.addScreenCapture(imgPath));" +
-                                "}" +
-                            "}";
-//        System.out.println(statements);
-        return statements;
+        return verifyFun;
     }
 }

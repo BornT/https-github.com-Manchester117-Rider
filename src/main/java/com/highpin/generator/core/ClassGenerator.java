@@ -233,8 +233,8 @@ public class ClassGenerator {
                     ctMethod.insertAfter(FunctionWapper.initIOSWrapper(po, appName, platformName, platformVersion, deviceName));
                 } else if (po.getMethodName().equalsIgnoreCase("destroyDriver") && deviceName.equalsIgnoreCase("iPhone")) {
                     ctMethod.insertAfter(FunctionWapper.destroyIOSWrapper(po));
-                } else if (po.getMethodName().equalsIgnoreCase("standByDriver")) {
-                    ctMethod.insertAfter(FunctionWapper.standByDriverWrapper(po));
+                } else if (po.getMethodName().equalsIgnoreCase("standByApp")) {
+                    ctMethod.insertAfter(FunctionWapper.standByAppWrapper(po));
                 } else if (po.getMethodName().startsWith("wait")) {
                     ctMethod.insertAfter(FunctionWapper.waitAction(po));
                 } else {
