@@ -91,7 +91,7 @@ public class FunctionWapper {
                                 "this.test.log(com.relevantcodes.extentreports.LogStatus.FAIL, \"" + po.getDescription() + " --->> " + po.getDataSet() + "\" + \":  \" + e.getMessage());" +
                             "} finally {" +
                                 "if (\"Yes\".equalsIgnoreCase(\"" + po.getScreenCapture() + "\")) {" +
-                                    "java.lang.String imgPath = com.highpin.tools.Utility.captureScreenShot(this.driver, \"" + po.getSuiteName() + "_" + time + "\", \"" + po.getClassName() + "_" + po.getDescription() + "\");" +
+                                    "java.lang.String imgPath = com.highpin.tools.Utility.captureScreenShot(this.driver, \"" + po.getSuiteName() + "_" + time + "\", \"" + po.getSuiteName() + "_" + po.getClassName() + "_" + po.getDescription() + "\");" +
                                     "this.test.log(com.relevantcodes.extentreports.LogStatus.INFO, \"截图 -- " + po.getDescription() + ": \" + this.test.addScreenCapture(imgPath));" +
                                 "}" +
                             "}";
@@ -153,7 +153,7 @@ public class FunctionWapper {
                                 "this.test.log(com.relevantcodes.extentreports.LogStatus.FAIL, \"" + po.getDescription() + " --->> " + po.getLocValue() + "\" + \":  \" + e.getMessage());" +
                             "} finally {" +
                                 "if (\"Yes\".equalsIgnoreCase(\"" + po.getScreenCapture() + "\")) {" +
-                                    "java.lang.String imgPath = com.highpin.tools.Utility.captureScreenShot(this.driver, \"" + po.getSuiteName() + "_" + time + "\", \"" + po.getClassName() + "_" + po.getDescription() + "\");" +
+                                    "java.lang.String imgPath = com.highpin.tools.Utility.captureScreenShot(this.driver, \"" + po.getSuiteName() + "_" + time + "\", \"" + po.getSuiteName() + "_" + po.getClassName() + "_" + po.getDescription() + "\");" +
                                     "this.test.log(com.relevantcodes.extentreports.LogStatus.INFO, \"截图 -- " + po.getDescription() + ": \" + this.test.addScreenCapture(imgPath));" +
                                 "}" +
                             "}";
