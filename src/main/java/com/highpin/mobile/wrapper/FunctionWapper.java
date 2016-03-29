@@ -5,6 +5,7 @@ import com.highpin.mobile.param.ParameterObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Administrator on 2016/3/19.
@@ -138,11 +139,33 @@ public class FunctionWapper {
         } else {
             System.out.println("不正确的操作类型");
         }
-        String verifyFun = VerifyModule.appendVerifyContentStatement(po);
+
+        List<?> verifyTypeList = po.getVerifyType();
+        List<?> verifyTargetList = po.getVerifyTarget();
+        List<?> verifyValueList = po.getVerifyValue();
+
+        String verifyFun = "";
+        if (!verifyTypeList.isEmpty() && !verifyTargetList.isEmpty() && !verifyValueList.isEmpty()) {
+            if (!verifyTypeList.get(0).equals("") && !verifyTargetList.get(0).equals("") && !verifyValueList.get(0).equals("")) {
+                for (int i = 0; i < verifyTypeList.size(); ++i) {
+                    String vTypeStr = verifyTypeList.get(i).toString();
+                    String vTargetStr = verifyTargetList.get(i).toString();
+                    String vValueStr = verifyValueList.get(i).toString();
+                    verifyFun += "flag = com.highpin.check.VerifyModule.appendVerifyContentStatement(this.driver, \"" + vTypeStr + "\", \"" + vTargetStr + "\", \"" + vValueStr + "\");" +
+                                 "if (flag) {" +
+                                    "this.test.log(com.relevantcodes.extentreports.LogStatus.PASS, \"" + vValueStr + "\" + \" ---- 文本验证:存在\");" +
+                                 "} else {" +
+                                    "this.test.log(com.relevantcodes.extentreports.LogStatus.FAIL, \"" + vValueStr + "\" + \" ---- 文本验证:不存在\");" +
+                                 "}";
+                }
+            }
+        }
+
         String time = new SimpleDateFormat("yyyy_MM_dd_HH_mm").format(new Date());
         String statements = "try {" +
                                 realFun +
                                 "this.test.log(com.relevantcodes.extentreports.LogStatus.PASS, \"" + po.getDescription() + " --->> " + po.getLocValue() + "\");" +
+                                "boolean flag = false;" +
                                 verifyFun +
                             "} catch (java.lang.Exception e) {" +
                                 "this.test.log(com.relevantcodes.extentreports.LogStatus.FAIL, \"" + po.getDescription() + " --->> " + po.getLocValue() + "\" + \":  \" + e.getMessage());" +
