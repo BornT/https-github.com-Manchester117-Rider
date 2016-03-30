@@ -21,10 +21,10 @@ public class FunctionWapper {
                             "try {" +
                                 // 调用真实操作方法
                                 "this.driver = com.highpin.mobile.driver.AndroidDriverOperation.initDriver(\"" + appName + "\", \"" + platformName + "\", \"" + platformVersion + "\", \"" + deviceName + "\");" +
-                                "this.test.log(com.relevantcodes.extentreports.LogStatus.PASS, \"" + po.getDescription() + " --->> " + po.getDataSet() + "\");" +
+                                "this.test.log(com.relevantcodes.extentreports.LogStatus.PASS, \"" + po.getDescription() + "\");" +
                             "} catch (java.lang.Exception e) {" +
                                 "e.printStackTrace();" +
-                                "this.test.log(com.relevantcodes.extentreports.LogStatus.FAIL, \"" + po.getDescription() + " --->> " + po.getDataSet() + "\" + \":  \" + e.getMessage());" +
+                                "this.test.log(com.relevantcodes.extentreports.LogStatus.FAIL, \"" + po.getDescription() + " --->> 出现异常\" + \": \" + e.getMessage());" +
                             "}";
         return statements;
     }
@@ -40,10 +40,10 @@ public class FunctionWapper {
                             "try {" +
                                 // 调用真实操作方法
                                 "this.driver = com.highpin.mobile.driver.IOSDriverOperation.initDriver(\"" + appName + "\", \"" + platformName + "\", \"" + platformVersion + "\", \"" + deviceName + "\");" +
-                                "this.test.log(com.relevantcodes.extentreports.LogStatus.PASS, \"" + po.getDescription() + " --->> " + po.getDataSet() + "\");" +
+                                "this.test.log(com.relevantcodes.extentreports.LogStatus.PASS, \"" + po.getDescription() + "\");" +
                             "} catch (java.lang.Exception e) {" +
                                 "e.printStackTrace();" +
-                                "this.test.log(com.relevantcodes.extentreports.LogStatus.FAIL, \"" + po.getDescription() + " --->> " + po.getDataSet() + "\" + \":  \" + e.getMessage());" +
+                                "this.test.log(com.relevantcodes.extentreports.LogStatus.FAIL, \"" + po.getDescription() + " --->> 出现异常\" + \": \" + e.getMessage());" +
                             "}";
         return statements;
     }
@@ -85,10 +85,10 @@ public class FunctionWapper {
         String statements = "try {" +
                                 // 调用真实操作方法
                                 "com.highpin.mobile.base.BaseDriverOperation.standByApp(this.driver, \"" + po.getLocType() + "\", \"" + po.getLocValue() + "\");" +
-                                "this.test.log(com.relevantcodes.extentreports.LogStatus.PASS, \"" + po.getDescription() + " --->> " + po.getDataSet() + "\");" +
+                                "this.test.log(com.relevantcodes.extentreports.LogStatus.PASS, \"" + po.getDescription() + "\");" +
                             "} catch (java.lang.Exception e) {" +
                                 "e.printStackTrace();" +
-                                "this.test.log(com.relevantcodes.extentreports.LogStatus.FAIL, \"" + po.getDescription() + " --->> " + po.getDataSet() + "\" + \":  \" + e.getMessage());" +
+                                "this.test.log(com.relevantcodes.extentreports.LogStatus.FAIL, \"" + po.getDescription() + " --->> 出现异常\" + \":  \" + e.getMessage());" +
                             "} finally {" +
                                 "if (\"Yes\".equalsIgnoreCase(\"" + po.getScreenCapture() + "\")) {" +
                                     "java.lang.String imgPath = com.highpin.tools.Utility.captureScreenShot(this.driver, \"" + po.getSuiteName() + "_" + time + "\", \"" + po.getSuiteName() + "_" + po.getClassName() + "_" + po.getDescription() + "\");" +
