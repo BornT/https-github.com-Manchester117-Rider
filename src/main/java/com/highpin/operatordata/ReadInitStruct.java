@@ -7,7 +7,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.*;
 
 /**
- * Created by Administrator on 2016/3/27.
+ * Created by Peng.Zhao on 2016/3/27.
  */
 public class ReadInitStruct {
     private SortedMap<String, SortedMap<String, Map<String, Object>>> initMap = null;

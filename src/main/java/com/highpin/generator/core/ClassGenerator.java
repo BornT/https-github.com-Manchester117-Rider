@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by Administrator on 2016/3/18.
+ * Created by Peng.Zhao on 2016/3/18.
  */
 public class ClassGenerator {
     private ClassPool cPool = null;

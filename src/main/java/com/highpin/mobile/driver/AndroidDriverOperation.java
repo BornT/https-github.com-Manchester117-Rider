@@ -17,7 +17,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
- * Created by Administrator on 2016/3/17.
+ * Created by Peng.Zhao on 2016/3/17.
  */
 public class AndroidDriverOperation extends BaseDriverOperation {
 

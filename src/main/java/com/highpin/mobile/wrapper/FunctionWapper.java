@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by Administrator on 2016/3/19.
+ * Created by Peng.Zhao on 2016/3/19.
  */
 public class FunctionWapper {
     public static String initAndroidWrapper(ParameterObject po, String appName, String platformName, String platformVersion, String deviceName) {

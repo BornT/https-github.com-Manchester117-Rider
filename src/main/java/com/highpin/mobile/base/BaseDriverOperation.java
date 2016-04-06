@@ -12,7 +12,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Created by Administrator on 2016/3/24.
+ * Created by Peng.Zhao on 2016/3/24.
  */
 public class BaseDriverOperation {
     public static Logger logger = LogManager.getLogger(BaseDriverOperation.class.getName());

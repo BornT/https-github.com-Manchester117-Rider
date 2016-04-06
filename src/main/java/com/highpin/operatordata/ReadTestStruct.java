@@ -7,7 +7,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.*;
 
 /**
- * Created by Administrator on 2016/3/17.
+ * Created by Peng.Zhao on 2016/3/17.
  */
 public class ReadTestStruct {
     private SortedMap<String, SortedMap<String, SortedMap<String, Map<String, Object>>>> suiteMap = null;

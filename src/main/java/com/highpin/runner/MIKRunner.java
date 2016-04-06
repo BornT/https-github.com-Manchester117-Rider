@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Administrator on 2016/3/20.
+ * Created by Peng.Zhao on 2016/3/20.
  */
 public class MIKRunner {
     private XMLFileOperator xfo = null;

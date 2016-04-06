@@ -3,7 +3,7 @@ package com.highpin.mobile.param;
 import java.util.List;
 
 /**
- * Created by Administrator on 2016/3/17.
+ * Created by Peng.Zhao on 2016/3/17.
  */
 public class ParameterObject {
     /**

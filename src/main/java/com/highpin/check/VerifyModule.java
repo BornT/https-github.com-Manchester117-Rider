@@ -8,7 +8,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 /**
- * Created by Administrator on 2016/3/28.
+ * Created by Peng.Zhao on 2016/3/28.
  */
 public class VerifyModule {
     public static Logger logger = LogManager.getLogger(VerifyModule.class.getName());

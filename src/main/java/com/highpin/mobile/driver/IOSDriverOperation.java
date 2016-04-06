@@ -15,7 +15,7 @@ import java.net.URL;
 
 
 /**
- * Created by Administrator on 2016/3/17.
+ * Created by Peng.Zhao on 2016/3/17.
  */
 public class IOSDriverOperation extends BaseDriverOperation {
     public static Logger logger = LogManager.getLogger(IOSDriverOperation.class.getName());
