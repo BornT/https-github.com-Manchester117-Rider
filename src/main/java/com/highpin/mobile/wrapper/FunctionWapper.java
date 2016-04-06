@@ -25,6 +25,7 @@ public class FunctionWapper {
                             "} catch (java.lang.Exception e) {" +
                                 "e.printStackTrace();" +
                                 "this.test.log(com.relevantcodes.extentreports.LogStatus.FAIL, \"" + po.getDescription() + " --->> 出现异常\" + \": \" + e.getMessage());" +
+                                "org.testng.Assert.fail(\"AndroidDriver初始化异常\");" +
                             "}";
         return statements;
     }
@@ -44,6 +45,7 @@ public class FunctionWapper {
                             "} catch (java.lang.Exception e) {" +
                                 "e.printStackTrace();" +
                                 "this.test.log(com.relevantcodes.extentreports.LogStatus.FAIL, \"" + po.getDescription() + " --->> 出现异常\" + \": \" + e.getMessage());" +
+                                "org.testng.Assert.fail(\"IOSDriver初始化异常\");" +
                             "}";
         return statements;
     }
@@ -56,6 +58,7 @@ public class FunctionWapper {
                             "} catch (java.lang.Exception e) {" +
                                 "e.printStackTrace();" +
                                 "this.test.log(com.relevantcodes.extentreports.LogStatus.FAIL, \"" + po.getDescription() + "\" + \":  \" + e.getMessage());" +
+                                "org.testng.Assert.fail(\"AndroidDriver关闭异常\");" +
                             "} finally {" +
                                 "this.extent.endTest(this.test);" +
                                 "this.extent.flush();" +
@@ -72,6 +75,7 @@ public class FunctionWapper {
                             "} catch (java.lang.Exception e) {" +
                                 "e.printStackTrace();" +
                                 "this.test.log(com.relevantcodes.extentreports.LogStatus.FAIL, \"" + po.getDescription() + "\" + \":  \" + e.getMessage());" +
+                                "org.testng.Assert.fail(\"IOSDriver关闭异常\");" +
                             "} finally {" +
                                 "this.extent.endTest(this.test);" +
                                 "this.extent.flush();" +
@@ -89,6 +93,7 @@ public class FunctionWapper {
                             "} catch (java.lang.Exception e) {" +
                                 "e.printStackTrace();" +
                                 "this.test.log(com.relevantcodes.extentreports.LogStatus.FAIL, \"" + po.getDescription() + " --->> 出现异常\" + \":  \" + e.getMessage());" +
+                                "org.testng.Assert.fail(\"APP启动异常\");" +
                             "} finally {" +
                                 "if (\"Yes\".equalsIgnoreCase(\"" + po.getScreenCapture() + "\")) {" +
                                     "java.lang.String imgPath = com.highpin.tools.Utility.captureScreenShot(this.driver, \"" + po.getSuiteName() + "_" + time + "\", \"" + po.getSuiteName() + "_" + po.getClassName() + "_" + po.getDescription() + "\");" +
@@ -150,7 +155,9 @@ public class FunctionWapper {
                                 "boolean flag = false;" +
                                 FunctionWapper.appendVerify(po) +
                             "} catch (java.lang.Exception e) {" +
+                                "e.printStackTrace();" +
                                 "this.test.log(com.relevantcodes.extentreports.LogStatus.FAIL, \"" + po.getDescription() + " --->> " + po.getLocValue() + "\" + \":  \" + e.getMessage());" +
+                                "org.testng.Assert.fail(\"元素查找超时导致流程中断\");" +
                             "} finally {" +
                                 "if (\"Yes\".equalsIgnoreCase(\"" + po.getScreenCapture() + "\")) {" +
                                     "java.lang.String imgPath = com.highpin.tools.Utility.captureScreenShot(this.driver, \"" + po.getSuiteName() + "_" + time + "\", \"" + po.getSuiteName() + "_" + po.getClassName() + "_" + po.getDescription() + "\");" +

@@ -92,7 +92,7 @@ public class BaseDriverOperation {
         return element;
     }
 
-    public static void click(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
+    public static void click(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) throws Exception {
         MobileElement element = null;
         try {
             WebDriverWait wait = new WebDriverWait(driver, 15);
@@ -105,7 +105,7 @@ public class BaseDriverOperation {
         }
     }
 
-    public static void input(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
+    public static void input(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) throws Exception {
         MobileElement element = null;
         try {
             WebDriverWait wait = new WebDriverWait(driver, 15);
@@ -118,7 +118,7 @@ public class BaseDriverOperation {
         }
     }
 
-    public static void clear(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
+    public static void clear(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) throws Exception {
         MobileElement element = null;
         try {
             WebDriverWait wait = new WebDriverWait(driver, 15);
@@ -131,7 +131,7 @@ public class BaseDriverOperation {
         }
     }
 
-    public static void longPress(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
+    public static void longPress(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) throws Exception {
         MobileElement element = null;
         try {
             WebDriverWait wait = new WebDriverWait(driver, 15);
@@ -145,7 +145,7 @@ public class BaseDriverOperation {
     }
 
     // 通过元素进行放大
-    public static void pinchByElement(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
+    public static void pinchByElement(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) throws Exception {
         MobileElement element = null;
         try {
             WebDriverWait wait = new WebDriverWait(driver, 15);
@@ -158,7 +158,7 @@ public class BaseDriverOperation {
     }
 
     // 通过坐标进行放大
-    public static void pinchByPosition(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
+    public static void pinchByPosition(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) throws Exception {
         try {
             int x = getScreenHeight(driver);
             int y = getScreenWidth(driver);
@@ -169,7 +169,7 @@ public class BaseDriverOperation {
     }
 
     // 通过元素进行缩小
-    public static void zoomByElement(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
+    public static void zoomByElement(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) throws Exception {
         MobileElement element = null;
         try {
             element = getElement(driver, locatorType, locatorValue);
@@ -180,7 +180,7 @@ public class BaseDriverOperation {
     }
 
     // 通过坐标进行缩小
-    public static void zoomByPosition(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
+    public static void zoomByPosition(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) throws Exception {
         try {
             int x = getScreenHeight(driver);
             int y = getScreenWidth(driver);
@@ -191,7 +191,7 @@ public class BaseDriverOperation {
     }
 
     // 向左滑屏
-    public static void swipeToLeft(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
+    public static void swipeToLeft(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) throws Exception {
         try {
             int height = getScreenHeight(driver);
             int width = getScreenWidth(driver);
@@ -206,7 +206,7 @@ public class BaseDriverOperation {
     }
 
     // 向右滑屏
-    public static void swipeToRight(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
+    public static void swipeToRight(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) throws Exception {
         try {
             int height = getScreenHeight(driver);
             int width = getScreenWidth(driver);
@@ -221,7 +221,7 @@ public class BaseDriverOperation {
     }
 
     // 向上滑动
-    public static void swipeToUp(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
+    public static void swipeToUp(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) throws Exception {
         try {
             int height = getScreenHeight(driver);
             int width = getScreenWidth(driver);
@@ -236,7 +236,7 @@ public class BaseDriverOperation {
     }
 
     // 向下滑动
-    public static void swipeToDown(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
+    public static void swipeToDown(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) throws Exception {
         try {
             int height = getScreenHeight(driver);
             int width = getScreenWidth(driver);
@@ -251,7 +251,7 @@ public class BaseDriverOperation {
     }
 
     // 滚动到特定元素
-    public static void scrollTo(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) {
+    public static void scrollTo(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) throws Exception {
         try {
             driver.scrollTo(dataSet);
         } catch (Exception e) {
