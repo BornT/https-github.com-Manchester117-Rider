@@ -39,6 +39,8 @@ public class AndroidDriverOperation extends BaseDriverOperation {
         // 设置Appium可以输入中文(不依赖键盘)
         capabilities.setCapability(AndroidMobileCapabilityType.UNICODE_KEYBOARD, "True");
         capabilities.setCapability(AndroidMobileCapabilityType.RESET_KEYBOARD, "True");
+        // 跳过检查和对应用进行debug签名的步骤
+        capabilities.setCapability(AndroidMobileCapabilityType.NO_SIGN, "False");
         // 初始化Driver
         AppiumDriver<MobileElement> driver = null;
         try {

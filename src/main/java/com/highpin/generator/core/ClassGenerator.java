@@ -1,7 +1,7 @@
 package com.highpin.generator.core;
 
 import com.highpin.mobile.param.ParameterObject;
-import com.highpin.mobile.wrapper.FunctionWapper;
+import com.highpin.mobile.wrapper.FunctionWrapper;
 import com.highpin.operatordata.ReadInitStruct;
 import com.highpin.operatordata.ReadTestStruct;
 import com.highpin.operatordata.TestDataExtract;
@@ -226,19 +226,19 @@ public class ClassGenerator {
             try {
                 ctMethod = caseCtClass.getDeclaredMethod(po.getMethodName());
                 if (po.getMethodName().equalsIgnoreCase("initDriver") && deviceName.equalsIgnoreCase("Android")) {
-                    ctMethod.insertAfter(FunctionWapper.initAndroidWrapper(po, appName, platformName, platformVersion, deviceName));
+                    ctMethod.insertAfter(FunctionWrapper.initAndroidWrapper(po, appName, platformName, platformVersion, deviceName));
                 } else if (po.getMethodName().equalsIgnoreCase("destroyDriver") && deviceName.equalsIgnoreCase("Android")) {
-                    ctMethod.insertAfter(FunctionWapper.destroyAndroidWrapper(po));
+                    ctMethod.insertAfter(FunctionWrapper.destroyAndroidWrapper(po));
                 } else if (po.getMethodName().equalsIgnoreCase("initDriver") && deviceName.equalsIgnoreCase("iPhone")) {
-                    ctMethod.insertAfter(FunctionWapper.initIOSWrapper(po, appName, platformName, platformVersion, deviceName));
+                    ctMethod.insertAfter(FunctionWrapper.initIOSWrapper(po, appName, platformName, platformVersion, deviceName));
                 } else if (po.getMethodName().equalsIgnoreCase("destroyDriver") && deviceName.equalsIgnoreCase("iPhone")) {
-                    ctMethod.insertAfter(FunctionWapper.destroyIOSWrapper(po));
+                    ctMethod.insertAfter(FunctionWrapper.destroyIOSWrapper(po));
                 } else if (po.getMethodName().equalsIgnoreCase("standByApp")) {
-                    ctMethod.insertAfter(FunctionWapper.standByAppWrapper(po));
+                    ctMethod.insertAfter(FunctionWrapper.standByAppWrapper(po));
                 } else if (po.getMethodName().startsWith("wait")) {
-                    ctMethod.insertAfter(FunctionWapper.waitAction(po));
+                    ctMethod.insertAfter(FunctionWrapper.waitAction(po));
                 } else {
-                    ctMethod.insertAfter(FunctionWapper.operationWrapper(po));
+                    ctMethod.insertAfter(FunctionWrapper.operationWrapper(po));
                 }
             } catch (CannotCompileException | NotFoundException e) {
                 e.printStackTrace();

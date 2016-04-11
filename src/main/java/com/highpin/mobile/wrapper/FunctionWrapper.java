@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by Peng.Zhao on 2016/3/19.
  */
-public class FunctionWapper {
+public class FunctionWrapper {
     public static String initAndroidWrapper(ParameterObject po, String appName, String platformName, String platformVersion, String deviceName) {
         String time = new SimpleDateFormat("yyyy_MM_dd_HH_mm").format(new Date());
         String statements = "this.extent = new com.relevantcodes.extentreports.ExtentReports(\"reports/" + po.getSuiteName() + "_" + time + "/Automation Test Report-HighPin-MIK.html\", java.lang.Boolean.FALSE);" +
@@ -107,11 +107,16 @@ public class FunctionWapper {
     public static String waitAction(ParameterObject po) {
         String realFun = null;
         String verifyStatement = null;
+        String time = new SimpleDateFormat("yyyy_MM_dd_HH_mm").format(new Date());
         if (po.getMethodName().startsWith("wait")) {
             realFun = "boolean flag = false;" +
                       "com.highpin.mobile.base.BaseDriverOperation.waitAction(\"" + po.getDataSet() + "\");";
-            verifyStatement = FunctionWapper.appendVerify(po);
+            verifyStatement = FunctionWrapper.appendVerify(po);
             realFun += verifyStatement;
+            realFun += "if (\"Yes\".equalsIgnoreCase(\"" + po.getScreenCapture() + "\")) {" +
+                            "java.lang.String imgPath = com.highpin.tools.Utility.captureScreenShot(this.driver, \"" + po.getSuiteName() + "_" + time + "\", \"" + po.getSuiteName() + "_" + po.getClassName() + "_" + po.getDescription() + "\");" +
+                            "this.test.log(com.relevantcodes.extentreports.LogStatus.INFO, \"截图 -- " + po.getDescription() + ": \" + this.test.addScreenCapture(imgPath));" +
+                       "}";
         }
         return realFun;
     }
@@ -153,12 +158,17 @@ public class FunctionWapper {
                                 realFun +
                                 "this.test.log(com.relevantcodes.extentreports.LogStatus.PASS, \"" + po.getDescription() + " --->> " + po.getLocValue() + "\");" +
                                 "boolean flag = false;" +
-                                FunctionWapper.appendVerify(po) +
+                                FunctionWrapper.appendVerify(po) +
                             "} catch (java.lang.Exception e) {" +
                                 "e.printStackTrace();" +
                                 "this.test.log(com.relevantcodes.extentreports.LogStatus.FAIL, \"" + po.getDescription() + " --->> " + po.getLocValue() + "\" + \":  \" + e.getMessage());" +
                                 "org.testng.Assert.fail(\"元素查找超时导致流程中断\");" +
                             "} finally {" +
+                                "try {" +
+                                    "java.lang.Thread.sleep(250L);" +
+                                "} catch (java.lang.InterruptedException e){" +
+                                    "e.printStackTrace();" +
+                                "}" +
                                 "if (\"Yes\".equalsIgnoreCase(\"" + po.getScreenCapture() + "\")) {" +
                                     "java.lang.String imgPath = com.highpin.tools.Utility.captureScreenShot(this.driver, \"" + po.getSuiteName() + "_" + time + "\", \"" + po.getSuiteName() + "_" + po.getClassName() + "_" + po.getDescription() + "\");" +
                                     "this.test.log(com.relevantcodes.extentreports.LogStatus.INFO, \"截图 -- " + po.getDescription() + ": \" + this.test.addScreenCapture(imgPath));" +

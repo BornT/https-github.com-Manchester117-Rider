@@ -26,12 +26,12 @@ public class TestDataExtract {
     }
 
     public void createAllExcelTestData() {
-        File [] caseList = this.caseFolder.listFiles();
+        File[] caseList = this.caseFolder.listFiles();
         InputStream is = null;
         XSSFWorkbook excelWBook = null;
 
         SortedMap<String, SortedMap<String, Map<String, Object>>> singleExcelMap = null;
-        SortedMap<String, Map<String,Object>> initSheetMap = null;
+        SortedMap<String, Map<String, Object>> initSheetMap = null;
 
         try {
             // 如果cases文件夹不为空并且cases文件夹中的文件数量大于0才会执行获取Excel handler的操作
@@ -173,21 +173,26 @@ public class TestDataExtract {
         titleSheet = excelWBook.getSheet("Test Suite");
         // 获取Test Suite的行数
         int rowNum = titleSheet.getPhysicalNumberOfRows();
-        // 遍历Test Suite每一行,获取要运行测试的Sheet名
-        for (int rowIdx = 1; rowIdx < rowNum; ++rowIdx) {
-            String sheetName = titleSheet.getRow(rowIdx).getCell(0).getStringCellValue();
-            // 获取每个Driver的初始化参数
-            Map<String, Object> initItem = new HashMap<>();
-            initItem.put("platformName", titleSheet.getRow(rowIdx).getCell(2).getStringCellValue());
-            initItem.put("platformVersion", titleSheet.getRow(rowIdx).getCell(3).getStringCellValue());
-            initItem.put("deviceName", titleSheet.getRow(rowIdx).getCell(4).getStringCellValue());
-            initItem.put("appName", titleSheet.getRow(rowIdx).getCell(5).getStringCellValue());
-            initItem.put("runMode", titleSheet.getRow(rowIdx).getCell(6).getStringCellValue());
-
-            // 如果Sheet的RunMode是'Yes'则将这个Sheet放置到列表当中
-            if ("Yes".equalsIgnoreCase(initItem.get("runMode").toString())) {
-                initSheetMap.put(sheetName, initItem);
+        try {
+            // 遍历Test Suite每一行,获取要运行测试的Sheet名
+            for (int rowIdx = 1; rowIdx < rowNum; ++rowIdx) {
+                String sheetName = titleSheet.getRow(rowIdx).getCell(0).getStringCellValue();
+                // 获取每个Driver的初始化参数
+                Map<String, Object> initItem = new HashMap<>();
+                initItem.put("platformName", titleSheet.getRow(rowIdx).getCell(2).getStringCellValue());
+                initItem.put("platformVersion", titleSheet.getRow(rowIdx).getCell(3).getStringCellValue());
+                initItem.put("deviceName", titleSheet.getRow(rowIdx).getCell(4).getStringCellValue());
+                initItem.put("appName", titleSheet.getRow(rowIdx).getCell(5).getStringCellValue());
+                initItem.put("runMode", titleSheet.getRow(rowIdx).getCell(6).getStringCellValue());
+                // 如果Sheet的RunMode是'Yes'则将这个Sheet放置到列表当中
+                if ("Yes".equalsIgnoreCase(initItem.get("runMode").toString())) {
+                    initSheetMap.put(sheetName, initItem);
+                }
             }
+        } catch (Exception e) {
+            // 规避读取Test Suite每个单元格必须是字符串的问题
+            logger.error("Test Suite中存在数字类型的单元格");
+            e.printStackTrace();
         }
         logger.info("单个Excel运行Title: " + Utility.dataStructConvertJSON(initSheetMap));
         return initSheetMap;

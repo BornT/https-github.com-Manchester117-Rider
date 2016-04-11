@@ -72,8 +72,8 @@ public class MIKRunner {
         mik.createTestJavaClass();
         mik.createTestDriverXML();
         mik.convertCode();
-        mik.testRunner();
-        mik.replaceReport();
-        mik.cleanCodeFile();
+//        mik.testRunner();
+//        mik.replaceReport();
+//        mik.cleanCodeFile();
     }
 }
