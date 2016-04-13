@@ -6,6 +6,7 @@ import io.appium.java_client.TouchAction;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -124,8 +125,11 @@ public class BaseDriverOperation {
             WebDriverWait wait = new WebDriverWait(driver, 15);
             element = getElement(driver, locatorType, locatorValue);
             wait.until(ExpectedConditions.visibilityOf(element));
-            // 需要增加清空前的准备语句
-            element.clear();
+            // 长按文本框2秒
+            TouchAction action = new TouchAction(driver);
+            action.longPress(element, 2).release().perform();
+            // 删除文本框中的已有文字
+            driver.getKeyboard().sendKeys(Keys.DELETE);
         } catch (Exception e) {
             e.printStackTrace();
         }
