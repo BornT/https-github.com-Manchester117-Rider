@@ -118,46 +118,54 @@ public class TestDataExtract {
         for (int rowIdx = 1; rowIdx < rowNum; ++rowIdx) {
             stepMap = new HashMap<>();
             for (int colIdx = 0; colIdx < colNum; ++colIdx) {
+                // 获取测试用例编号
+                String caseID = testCaseSheet.getRow(rowIdx).getCell(0).getStringCellValue().trim();
                 // 获取Sheet的字段Title
                 String title = testCaseSheet.getRow(0).getCell(colIdx).getStringCellValue().trim();
                 // 获取Sheet的字段Value
-                String value = testCaseSheet.getRow(rowIdx).getCell(colIdx).getStringCellValue().trim();
-                // 根据字段获取数据
-                if (title.equals("Test_Step_ID") && !value.isEmpty()) {
-                    sheetMap.put(value, stepMap);
-                    // 首先给每个测试步骤增加验证点的数据结构
-                    verifyTypeList = new ArrayList<>();
-                    verifyTargetList = new ArrayList<>();
-                    verifyValueList = new ArrayList<>();
-                } else if (title.equals("Description")) {
-                    stepMap.put(title, value);
-                } else if (title.equals("Action_Keyword")) {
-                    stepMap.put(title, value);
-                } else if (title.equals("Action_Type")) {
-                    stepMap.put(title, value);
-                } else if (title.equals("Locator_Type")) {
-                    stepMap.put(title, value);
-                } else if (title.equals("Locator_Value")) {
-                    stepMap.put(title, value);
-                } else if (title.equals("Data_Set")) {
-                    stepMap.put(title, value);
-                } else if (title.equals("Verify_Type")) {
-                    stepMap.put(title, verifyTypeList);
-                    if (verifyTypeList != null) {
-                        verifyTypeList.add(value);
+                String value = null;
+                try {
+                    value = testCaseSheet.getRow(rowIdx).getCell(colIdx).getStringCellValue().trim();
+                    // 根据字段获取数据
+                    if (title.equals("Test_Step_ID") && !value.isEmpty()) {
+                        sheetMap.put(value, stepMap);
+                        // 首先给每个测试步骤增加验证点的数据结构
+                        verifyTypeList = new ArrayList<>();
+                        verifyTargetList = new ArrayList<>();
+                        verifyValueList = new ArrayList<>();
+                    } else if (title.equals("Description")) {
+                        stepMap.put(title, value);
+                    } else if (title.equals("Action_Keyword")) {
+                        stepMap.put(title, value);
+                    } else if (title.equals("Action_Type")) {
+                        stepMap.put(title, value);
+                    } else if (title.equals("Locator_Type")) {
+                        stepMap.put(title, value);
+                    } else if (title.equals("Locator_Value")) {
+                        stepMap.put(title, value);
+                    } else if (title.equals("Data_Set")) {
+                        stepMap.put(title, value);
+                    } else if (title.equals("Verify_Type")) {
+                        stepMap.put(title, verifyTypeList);
+                        if (verifyTypeList != null) {
+                            verifyTypeList.add(value);
+                        }
+                    } else if (title.equals("Verify_Target")) {
+                        stepMap.put(title, verifyTargetList);
+                        if (verifyTargetList != null) {
+                            verifyTargetList.add(value);
+                        }
+                    } else if (title.equals("Verify_Value")) {
+                        stepMap.put(title, verifyValueList);
+                        if (verifyValueList != null) {
+                            verifyValueList.add(value);
+                        }
+                    } else if (title.equals("Screen_Capture")) {
+                        stepMap.put(title, value);
                     }
-                } else if (title.equals("Verify_Target")) {
-                    stepMap.put(title, verifyTargetList);
-                    if (verifyTargetList != null) {
-                        verifyTargetList.add(value);
-                    }
-                } else if (title.equals("Verify_Value")) {
-                    stepMap.put(title, verifyValueList);
-                    if (verifyValueList != null) {
-                        verifyValueList.add(value);
-                    }
-                } else if (title.equals("Screen_Capture")) {
-                    stepMap.put(title, value);
+                } catch (NullPointerException e) {
+                    logger.error("出错单元格: " + caseID + "|" + title);
+                    e.printStackTrace();
                 }
             }
         }
