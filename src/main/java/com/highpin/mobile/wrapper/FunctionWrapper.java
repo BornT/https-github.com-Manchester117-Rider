@@ -13,9 +13,9 @@ public class FunctionWrapper {
     public static String initAndroidWrapper(ParameterObject po, String appName, String platformName, String platformVersion, String deviceName) {
         String time = new SimpleDateFormat("yyyy_MM_dd_HH_mm").format(new Date());
         String statements = "this.extent = new com.relevantcodes.extentreports.ExtentReports(\"reports/" + po.getSuiteName() + "_" + time + "/Automation Test Report-HighPin-MIK.html\", java.lang.Boolean.FALSE);" +
-                            "this.extent.addSystemInfo(\"Appium Version\", \"1.4.16.1\");" +
-                            "this.extent.addSystemInfo(\"Appium Java Client Version\", \"3.4\");" +
-                            "this.extent.addSystemInfo(\"Selenium Server Version\", \"2.52.0\");" +
+                            "this.extent.addSystemInfo(\"Appium Version\", \"1.5.3\");" +
+                            "this.extent.addSystemInfo(\"Appium Java Client Version\", \"4.1.2\");" +
+                            "this.extent.addSystemInfo(\"Selenium Server Version\", \"2.53.1\");" +
                             "this.extent.addSystemInfo(\"Environment\", \"QA\");" +
                             "this.test = this.extent.startTest(\"" + po.getClassName() + "\", \"HighPin Automation Test\");" +
                             "try {" +
@@ -139,8 +139,6 @@ public class FunctionWrapper {
             realFun = "com.highpin.mobile.base.BaseDriverOperation.swipeToDown(this.driver, \"" + po.getLocType()+ "\", \"" + po.getLocValue() + "\", \"" + po.getDataSet() + "\");";
         } else if (po.getActionType().equalsIgnoreCase("longPress")) {
             realFun = "com.highpin.mobile.base.BaseDriverOperation.longPress(this.driver, \"" + po.getLocType()+ "\", \"" + po.getLocValue() + "\", \"" + po.getDataSet() + "\");";
-        } else if (po.getActionType().equalsIgnoreCase("scrollTo")) {
-            realFun = "com.highpin.mobile.base.BaseDriverOperation.scrollTo(this.driver, \"" + po.getLocType()+ "\", \"" + po.getLocValue() + "\", \"" + po.getDataSet() + "\");";
         } else if (po.getActionType().equalsIgnoreCase("pinchByElement")) {
             realFun = "com.highpin.mobile.base.BaseDriverOperation.pinchByElement(this.driver, \"" + po.getLocType()+ "\", \"" + po.getLocValue() + "\", \"" + po.getDataSet() + "\");";
         } else if (po.getActionType().equalsIgnoreCase("pinchByPosition")) {

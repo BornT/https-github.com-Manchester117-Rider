@@ -253,13 +253,13 @@ public class BaseDriverOperation {
             e.printStackTrace();
         }
     }
-
+    // 状态: [废弃]可参见https://github.com/appium/appium/issues/6242
     // 滚动到特定元素
-    public static void scrollTo(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) throws Exception {
-        try {
-            driver.scrollTo(dataSet);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    public static void scrollTo(AppiumDriver<MobileElement> driver, String locatorType, String locatorValue, String dataSet) throws Exception {
+//        try {
+//            driver.scrollTo(dataSet);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 }
