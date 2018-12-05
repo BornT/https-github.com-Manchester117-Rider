@@ -1,7 +1,7 @@
 # Created by .ignore support plugin (hsz.mobi)
 .DS_Store
 /.idea
-Mobile.iml
+Rider.iml
 apps/
 reports/
 target/
